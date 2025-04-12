@@ -46,16 +46,6 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/peso"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/abel"
-                android:text="@string/peso"
-                android:textSize="15sp"
-                android:textColor="@android:color/black"
-                android:gravity="center" />
-
-            <TextView
                 android:layout_marginStart="5sp"
                 android:id="@+id/product_price"
                 android:layout_width="wrap_content"
