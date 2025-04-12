@@ -3,4 +3,10 @@
     <string name="product_hint">Search products</string>
     <string name="confirm_order">Confirm Order</string>
     <string name="reset">Reset</string>
+    <string name="peso">₱</string>
+    <string name="menu_quantity">0</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_price">150</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
 </resources>
