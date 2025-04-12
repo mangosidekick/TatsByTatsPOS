@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">TatsByTatsPOS</string>
     <string name="product_hint">Search products</string>
+    <string name="confirm_order">Confirm Order</string>
+    <string name="reset">Reset</string>
 </resources>
