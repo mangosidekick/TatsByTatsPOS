@@ -14,15 +14,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-
-
     private RecyclerView recyclerView;
     private ProductAdapter productAdapter;
     private List<Product> productList;
-
-    int numberOfColumns = 2; // Set the number of columns you want
-    GridLayoutManager gridLayoutManager = new GridLayoutManager(this, numberOfColumns);
-    recyclerView.setLayoutManager(gridLayoutManager);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.menuRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        int numberOfColumns = 2; // Set the number of columns you want
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, numberOfColumns);
+        recyclerView.setLayoutManager(gridLayoutManager);
+
         // Initialize the product list
         productList = new ArrayList<>();
         productList.add(new Product(R.drawable.product_image, "Product 1", 29.99));
@@ -43,5 +41,7 @@ public class MainActivity extends AppCompatActivity {
         // Set up the adapter
         productAdapter = new ProductAdapter(productList);
         recyclerView.setAdapter(productAdapter);
+
+
     }
 }
