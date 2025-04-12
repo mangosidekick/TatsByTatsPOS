@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TatsByTatsPOS</string>
+    <string name="product_hint">Search products</string>
 </resources>
