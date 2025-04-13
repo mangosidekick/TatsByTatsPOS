@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private ProductAdapter productAdapter;
     private List<Product> productList;
     private NavigationView navigationView;
+    private Button confirmButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +42,11 @@ public class MainActivity extends AppCompatActivity {
 
         //NAV BAR STUFF RAAAAAAGHHH
 
+        //WORK ON THIS LATERRRRRR
+
         drawerLayout = findViewById(R.id.drawer_layout);
         sideBarButton = findViewById(R.id.sideBarButton);
         navigationView = findViewById(R.id.navigationView);
-
 
         sideBarButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +70,23 @@ public class MainActivity extends AppCompatActivity {
 
                 // DO NOT close the drawer here (per your request)
                 return false;
+            }
+        });
+
+        //test
+        confirmButton = findViewById(R.id.confirm_button);
+
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        sideBarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
             }
         });
 
