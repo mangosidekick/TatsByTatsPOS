@@ -5,8 +5,9 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="5dp"
-    android:background="@drawable/round_rectangle"
-    android:layout_margin="10dp">
+    android:layout_marginStart="5dp"
+    android:layout_marginBottom="7dp"
+    android:background="@drawable/round_rectangle">
 
     <!-- Image and Product Info -->
     <LinearLayout
@@ -72,6 +73,7 @@
         <!-- Quantity Text -->
         <ImageButton
             android:src="@drawable/baseline_horizontal_rule_24"
+            android:contentDescription="@string/minus"
             android:id="@+id/btn_minus"
             android:layout_width="48sp"
             android:layout_height="48sp"
@@ -96,6 +98,7 @@
 
         <!-- Plus Button -->
         <ImageButton
+            android:contentDescription="@string/plus"
             android:src="@drawable/baseline_add_24"
             android:id="@+id/btn_plus"
             android:layout_width="48dp"

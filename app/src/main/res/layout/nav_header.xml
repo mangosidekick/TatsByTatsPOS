@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="80sp"
+    android:layout_gravity="top"
+    android:background="@drawable/round_rectangle_orange"
+    android:paddingStart="15sp">
+
+    <ImageButton
+        android:id="@+id/sideBarButton"
+        android:layout_width="60sp"
+        android:layout_height="60sp"
+        android:layout_marginTop="10sp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/baseline_menu_24"
+        app:tint="@color/white"
+        />
+
+</LinearLayout>

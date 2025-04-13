@@ -9,13 +9,25 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <!--<com.google.android.material.navigation.NavigationView
+        android:layout_width="260sp"
+        android:layout_height="match_parent"
+        android:id="@+id/nav_view"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/nav_menu"
+        >
+
+    </com.google.android.material.navigation.NavigationView>-->
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/upperNavBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true">
 
-        <com.google.android.material.appbar.MaterialToolbar
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="80sp"
             android:background="@color/white">
@@ -44,18 +56,19 @@
                 android:textColor="@color/black"
                 android:textColorHint="@color/dark_grey"
                 android:textSize="15sp" />
-        </com.google.android.material.appbar.MaterialToolbar>
+        </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:padding="5sp"
         android:layout_weight="1"
         android:id="@+id/menuRecyclerView"
+        android:layout_gravity="center_horizontal"
         android:contentDescription="@string/appbar_scrolling_view_behavior"
         >
-
-
     </androidx.recyclerview.widget.RecyclerView>
 
     <LinearLayout

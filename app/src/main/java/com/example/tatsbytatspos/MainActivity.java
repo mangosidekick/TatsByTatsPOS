@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        //nav bar stuff
+
         // Initialize RecyclerView and set up the LayoutManager
         recyclerView = findViewById(R.id.menuRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

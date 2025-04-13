@@ -9,4 +9,9 @@
     <string name="product_price">150</string>
     <string name="plus">+</string>
     <string name="minus">-</string>
+    <string name="home">Home</string>
+    <string name="order_history">Order History</string>
+    <string name="inventory">Inventory</string>
+    <string name="open_nav">Open</string>
+    <string name="close_nav">Close</string>
 </resources>
