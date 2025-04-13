@@ -12,17 +12,17 @@
     tools:openDrawer="start"
     >
 
-
-    <!--<com.google.android.material.navigation.NavigationView
-        android:layout_width="match_parent"
+    <!-- Sidebar / Navigation Drawer -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigationView"
+        android:layout_width="230sp"
         android:layout_height="match_parent"
-        android:id="@+id/nav_view"
         android:layout_gravity="start"
-        app:headerLayout="@drawable/round_rectangle_corner"
-        app:itemTextColor="@color/black"
-        app:menu="@menu/nav_menu"
-        >
-    </com.google.android.material.navigation.NavigationView>-->
+        android:layout_marginTop="25sp"
+        app:headerLayout="@layout/nav_header"
+        android:background="@color/orange"
+        app:itemTextColor="@color/white"
+        app:menu="@menu/nav_menu" />
 
     <!--main shit-->
     <LinearLayout

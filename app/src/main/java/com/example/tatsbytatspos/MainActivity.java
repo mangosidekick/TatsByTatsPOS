@@ -1,12 +1,18 @@
 package com.example.tatsbytatspos;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -17,12 +23,14 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
+public class MainActivity extends AppCompatActivity {
 
-public class MainActivity extends AppCompatActivity{
-
+    private DrawerLayout drawerLayout;
+    private ImageButton sideBarButton;
     private RecyclerView recyclerView;
     private ProductAdapter productAdapter;
     private List<Product> productList;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +38,37 @@ public class MainActivity extends AppCompatActivity{
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        //nav bar stuff
+        //NAV BAR STUFF RAAAAAAGHHH
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        sideBarButton = findViewById(R.id.sideBarButton);
+        navigationView = findViewById(R.id.navigationView);
+
+
+        sideBarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+
+                if (id == R.id.nav_home) {
+                    Toast.makeText(MainActivity.this, "Home clicked", Toast.LENGTH_SHORT).show();
+                } else if (id == R.id.nav_history) {
+                    Toast.makeText(MainActivity.this, "Order History clicked", Toast.LENGTH_SHORT).show();
+                } else if (id == R.id.nav_inventory) {
+                    Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
+                }
+
+                // DO NOT close the drawer here (per your request)
+                return false;
+            }
+        });
 
         //recycle view stuff
         // Initialize RecyclerView and set up the LayoutManager
@@ -57,6 +95,6 @@ public class MainActivity extends AppCompatActivity{
         // Set up the adapter
         productAdapter = new ProductAdapter(productList);
         recyclerView.setAdapter(productAdapter);
-
     }
 }
+
