@@ -1,18 +1,24 @@
 package com.example.tatsbytatspos;
 
 import android.os.Bundle;
+import android.widget.Toolbar;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     private RecyclerView recyclerView;
     private ProductAdapter productAdapter;
@@ -26,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         //nav bar stuff
 
+        //recycle view stuff
         // Initialize RecyclerView and set up the LayoutManager
         recyclerView = findViewById(R.id.menuRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -39,11 +46,17 @@ public class MainActivity extends AppCompatActivity {
         productList.add(new Product(R.drawable.product_image, "Product 1", 29.99));
         productList.add(new Product(R.drawable.product_image, "Product 2", 19.99));
         productList.add(new Product(R.drawable.product_image, "Product 3", 39.99));
+        productList.add(new Product(R.drawable.product_image, "Product 3", 39.99));
+        productList.add(new Product(R.drawable.product_image, "Product 3", 39.99));
+        productList.add(new Product(R.drawable.product_image, "Product 3", 39.99));
+        productList.add(new Product(R.drawable.product_image, "Product 3", 39.99));
+        productList.add(new Product(R.drawable.product_image, "Product 3", 39.99));
+        productList.add(new Product(R.drawable.product_image, "Product 3", 39.99));
+        productList.add(new Product(R.drawable.product_image, "Product 3", 39.99));
 
         // Set up the adapter
         productAdapter = new ProductAdapter(productList);
         recyclerView.setAdapter(productAdapter);
-
 
     }
 }

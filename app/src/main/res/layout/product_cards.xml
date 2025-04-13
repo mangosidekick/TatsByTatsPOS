@@ -78,10 +78,12 @@
             android:layout_width="48sp"
             android:layout_height="48sp"
             android:layout_gravity="center"
-            android:background="@drawable/round_rectangle_orange"
+            android:background="@drawable/circle"
+            android:backgroundTint="@color/orange"
             android:layout_marginEnd="10sp"
             android:textSize="20sp"
-            app:tint="@color/white" />
+            app:tint="@color/white"
+            />
 
         <EditText
             android:gravity="center"
@@ -104,7 +106,8 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:textColor="@color/white"
-            android:background="@drawable/round_rectangle_orange"
+            android:background="@drawable/circle"
+            android:backgroundTint="@color/orange"
             android:layout_marginStart="10sp"
             android:layout_gravity="center"
             app:tint="@color/white" />
