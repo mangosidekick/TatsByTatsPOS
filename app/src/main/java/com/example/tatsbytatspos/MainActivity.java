@@ -1,5 +1,6 @@
 package com.example.tatsbytatspos;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -56,11 +57,13 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_home) {
-                Toast.makeText(MainActivity.this, "Home clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Already on this screen!", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_history) {
-                Toast.makeText(MainActivity.this, "History clicked", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, OrderHistory.class));
+                //Toast.makeText(MainActivity.this, "History clicked", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_inventory) {
-                Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, Inventory.class));
+                //Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
             }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
