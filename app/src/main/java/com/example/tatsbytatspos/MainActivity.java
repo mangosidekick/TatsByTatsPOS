@@ -42,36 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
         //NAV BAR STUFF RAAAAAAGHHH
 
-        //WORK ON THIS LATERRRRRR
-
-        drawerLayout = findViewById(R.id.drawer_layout);
-        sideBarButton = findViewById(R.id.sideBarButton);
-        navigationView = findViewById(R.id.navigationView);
-
-        sideBarButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawerLayout.openDrawer(GravityCompat.START);
-            }
-        });
-
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-
-                if (id == R.id.nav_home) {
-                    Toast.makeText(MainActivity.this, "Home clicked", Toast.LENGTH_SHORT).show();
-                } else if (id == R.id.nav_history) {
-                    Toast.makeText(MainActivity.this, "Order History clicked", Toast.LENGTH_SHORT).show();
-                } else if (id == R.id.nav_inventory) {
-                    Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
-                }
-
-                // DO NOT close the drawer here (per your request)
-                return false;
-            }
-        });
 
         //test
         confirmButton = findViewById(R.id.confirm_button);
@@ -83,12 +53,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        sideBarButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawerLayout.openDrawer(GravityCompat.START);
-            }
-        });
 
         //recycle view stuff
         // Initialize RecyclerView and set up the LayoutManager
