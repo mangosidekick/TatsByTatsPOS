@@ -1,84 +1,90 @@
 package com.example.tatsbytatspos;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
+    private Toolbar toolbar;
     private ImageButton sideBarButton;
     private RecyclerView recyclerView;
     private ProductAdapter productAdapter;
     private List<Product> productList;
     private NavigationView navigationView;
     private Button confirmButton;
+    private Button resetButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        //NAV BAR STUFF RAAAAAAGHHH
-
-
-        //test
+        // Initialize views
+        drawerLayout = findViewById(R.id.drawer_layout);
+        toolbar = findViewById(R.id.toolbar);
+        sideBarButton = findViewById(R.id.sideBarButton);
+        navigationView = findViewById(R.id.navigationView);
         confirmButton = findViewById(R.id.confirm_button);
+        resetButton = findViewById(R.id.resetButton);
+        recyclerView = findViewById(R.id.menuRecyclerView);
 
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        // Set up the Toolbar
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+
+        // Sidebar button opens drawer
+        sideBarButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+
+        // Navigation drawer item clicks
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                Toast.makeText(MainActivity.this, "Home clicked", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_history) {
+                Toast.makeText(MainActivity.this, "History clicked", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_inventory) {
                 Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
             }
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
         });
 
+        // Confirm button action
+        confirmButton.setOnClickListener(v ->
+                Toast.makeText(MainActivity.this, "Order confirmed!", Toast.LENGTH_SHORT).show());
 
-        //recycle view stuff
-        // Initialize RecyclerView and set up the LayoutManager
-        recyclerView = findViewById(R.id.menuRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // Reset button action
+        resetButton.setOnClickListener(v ->
+                Toast.makeText(MainActivity.this, "Order reset!", Toast.LENGTH_SHORT).show());
 
-        int numberOfColumns = 2; // Set the number of columns you want
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, numberOfColumns);
+        // Set up RecyclerView
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2); // 2 columns
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        // Initialize the product list
+        // Sample product list
         productList = new ArrayList<>();
-        productList.add(new Product(R.drawable.product_image, "Product 1", 29.99));
-        productList.add(new Product(R.drawable.product_image, "Product 2", 19.99));
-        productList.add(new Product(R.drawable.product_image, "Product 3", 39.99));
-        productList.add(new Product(R.drawable.product_image, "Product 3", 39.99));
-        productList.add(new Product(R.drawable.product_image, "Product 3", 39.99));
-        productList.add(new Product(R.drawable.product_image, "Product 3", 39.99));
-        productList.add(new Product(R.drawable.product_image, "Product 3", 39.99));
-        productList.add(new Product(R.drawable.product_image, "Product 3", 39.99));
-        productList.add(new Product(R.drawable.product_image, "Product 3", 39.99));
-        productList.add(new Product(R.drawable.product_image, "Product 3", 39.99));
+        for (int i = 1; i <= 10; i++) {
+            productList.add(new Product(R.drawable.product_image, "Product " + i, 19.99 + i));
+        }
 
-        // Set up the adapter
         productAdapter = new ProductAdapter(productList);
         recyclerView.setAdapter(productAdapter);
     }
 }
-
