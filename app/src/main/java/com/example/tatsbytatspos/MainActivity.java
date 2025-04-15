@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Sample product list
         productList = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 5; i++) {
             productList.add(new Product(R.drawable.product_image, "Product " + i, 19.99 + i));
         }
 

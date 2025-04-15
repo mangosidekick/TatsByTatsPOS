@@ -2,7 +2,6 @@ package com.example.tatsbytatspos;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -26,24 +25,20 @@ public class OrderHistory extends AppCompatActivity {
     private Toolbar toolbar;
     private ImageButton sideBarButton;
     private RecyclerView recyclerView;
-    private ProductAdapter productAdapter;
-    private List<Product> productList;
+    private OrdersAdapter ordersAdapter;
+    private List<Orders> orderList;
     private NavigationView navigationView;
-    private Button confirmButton;
-    private Button resetButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_order_history);
 
         // Initialize views
         drawerLayout = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
         sideBarButton = findViewById(R.id.sideBarButton);
         navigationView = findViewById(R.id.navigationView);
-        confirmButton = findViewById(R.id.confirm_button);
-        resetButton = findViewById(R.id.resetButton);
         recyclerView = findViewById(R.id.menuRecyclerView);
 
         // Set up the Toolbar
@@ -70,25 +65,17 @@ public class OrderHistory extends AppCompatActivity {
             return true;
         });
 
-        // Confirm button action
-        confirmButton.setOnClickListener(v ->
-                Toast.makeText(OrderHistory.this, "Order confirmed!", Toast.LENGTH_SHORT).show());
-
-        // Reset button action
-        resetButton.setOnClickListener(v ->
-                Toast.makeText(OrderHistory.this, "Order reset!", Toast.LENGTH_SHORT).show());
-
         // Set up RecyclerView
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2); // 2 columns
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 1); // 1 columns
         recyclerView.setLayoutManager(gridLayoutManager);
 
         // Sample product list
-        productList = new ArrayList<>();
+        orderList = new ArrayList<>();
         for (int i = 1; i <= 10; i++) {
-            productList.add(new Product(R.drawable.product_image, "Product " + i, 19.99 + i));
+            orderList.add(new Orders("Order" + i, i,i));
         }
 
-        productAdapter = new ProductAdapter(productList);
-        recyclerView.setAdapter(productAdapter);
+        ordersAdapter = new OrdersAdapter(orderList);
+        recyclerView.setAdapter(ordersAdapter);
     }
 }
