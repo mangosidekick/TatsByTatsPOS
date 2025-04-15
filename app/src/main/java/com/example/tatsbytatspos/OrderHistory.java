@@ -1,19 +1,94 @@
 package com.example.tatsbytatspos;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.navigation.NavigationView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class OrderHistory extends AppCompatActivity {
+
+    private DrawerLayout drawerLayout;
+    private Toolbar toolbar;
+    private ImageButton sideBarButton;
+    private RecyclerView recyclerView;
+    private ProductAdapter productAdapter;
+    private List<Product> productList;
+    private NavigationView navigationView;
+    private Button confirmButton;
+    private Button resetButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_order_history);
+        setContentView(R.layout.activity_main);
+
+        // Initialize views
+        drawerLayout = findViewById(R.id.drawer_layout);
+        toolbar = findViewById(R.id.toolbar);
+        sideBarButton = findViewById(R.id.sideBarButton);
+        navigationView = findViewById(R.id.navigationView);
+        confirmButton = findViewById(R.id.confirm_button);
+        resetButton = findViewById(R.id.resetButton);
+        recyclerView = findViewById(R.id.menuRecyclerView);
+
+        // Set up the Toolbar
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+
+        // Sidebar button opens drawer
+        sideBarButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+
+        // Navigation drawer item clicks
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                startActivity(new Intent(OrderHistory.this, MainActivity.class));
+            } else if (id == R.id.nav_history) {
+                //startActivity(new Intent(OrderHistory.this, OrderHistory.class));
+                Toast.makeText(OrderHistory.this, "Already on this screen!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "History clicked", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_inventory) {
+                startActivity(new Intent(OrderHistory.this, Inventory.class));
+                //Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
+            }
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        });
+
+        // Confirm button action
+        confirmButton.setOnClickListener(v ->
+                Toast.makeText(OrderHistory.this, "Order confirmed!", Toast.LENGTH_SHORT).show());
+
+        // Reset button action
+        resetButton.setOnClickListener(v ->
+                Toast.makeText(OrderHistory.this, "Order reset!", Toast.LENGTH_SHORT).show());
+
+        // Set up RecyclerView
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2); // 2 columns
+        recyclerView.setLayoutManager(gridLayoutManager);
+
+        // Sample product list
+        productList = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            productList.add(new Product(R.drawable.product_image, "Product " + i, 19.99 + i));
+        }
+
+        productAdapter = new ProductAdapter(productList);
+        recyclerView.setAdapter(productAdapter);
     }
 }
