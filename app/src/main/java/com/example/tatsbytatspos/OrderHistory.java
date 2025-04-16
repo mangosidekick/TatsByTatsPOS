@@ -71,8 +71,8 @@ public class OrderHistory extends AppCompatActivity {
 
         // Sample product list
         orderList = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
-            orderList.add(new Orders("Order" + i, i,i));
+        for (int i = 1; i <= 6; i++) {
+            orderList.add(new Orders("Order " + i, i,i));
         }
 
         ordersAdapter = new OrdersAdapter(orderList);

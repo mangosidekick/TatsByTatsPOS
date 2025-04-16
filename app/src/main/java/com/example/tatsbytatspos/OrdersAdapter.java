@@ -3,53 +3,55 @@ package com.example.tatsbytatspos;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tatsbytatspos.R;
 import com.example.tatsbytatspos.Orders;
+import com.example.tatsbytatspos.R;
 
 import java.util.List;
 
 public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewHolder> {
 
-    private List<Orders> orderList;
+    private List<Orders> ordersList;
 
-    public OrdersAdapter(List<Orders> orderList) {
-        this.orderList = orderList;
+    public OrdersAdapter(List<Orders> ordersList) {
+        this.ordersList = ordersList;
     }
 
     @NonNull
     @Override
     public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.order_cards, parent, false); // 'item_product' is the layout you provided
-        return new OrderViewHolder(itemView);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.order_cards, parent, false);
+        return new OrderViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
-        Orders currentOrder = orderList.get(position);
-        holder.orderNumber.setText(currentOrder.getOrder());
-        holder.orderDate.setText(currentOrder.getDate());
-        holder.orderTime.setText(currentOrder.getTime());
+        Orders order = ordersList.get(position);
+        holder.orderNumberText.setText(order.getOrderNumber());
+        holder.orderDateText.setText("Date: " + order.getOrderDate());
+        holder.orderTimeText.setText("Time: " + order.getOrderTime());
     }
 
     @Override
     public int getItemCount() {
-        return orderList.size();
+        return ordersList.size();
     }
 
     public static class OrderViewHolder extends RecyclerView.ViewHolder {
-        TextView orderNumber, orderDate, orderTime;
-        public OrderViewHolder(View itemView) {
+
+        TextView orderNumberText;
+        TextView orderDateText;
+        TextView orderTimeText;
+
+        public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
-            orderNumber = itemView.findViewById(R.id.order_number);
-            orderDate = itemView.findViewById(R.id.order_date);
-            orderTime = itemView.findViewById(R.id.order_time);
+            orderNumberText = itemView.findViewById(R.id.order_number);
+            orderDateText = itemView.findViewById(R.id.order_date);
+            orderTimeText = itemView.findViewById(R.id.order_time);
         }
     }
 }

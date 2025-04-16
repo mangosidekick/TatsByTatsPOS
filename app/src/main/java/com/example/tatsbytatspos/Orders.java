@@ -1,38 +1,34 @@
 package com.example.tatsbytatspos;
 
 public class Orders {
+    private String orderNumber;
+    private int orderDate;
+    private int orderTime;
 
-    private String order;
-    private int date;
-    private int time;
-
-    public Orders(String order, int date, int time) {
-        this.order = order;
-        this.date = date;
-        this.time= time;
+    public Orders(String orderNumber, int orderDate, int orderTime) {
+        this.orderNumber = orderNumber;
+        this.orderDate = orderDate;
+        this.orderTime = orderTime;
     }
 
-    public String getOrder() {
-        return order;
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
     }
 
-    public void setOrder(String order) {
-        this.order = order;
+    public int getOrderDate() {
+        return orderDate;
+    }
+    public void setOrderDate(int orderDate) {
+        this.orderDate = orderDate;
     }
 
-    public int getDate() {
-        return date;
+    public int getOrderTime() {
+        return orderTime;
     }
-
-    public void setDate(int date) {
-        this.date = date;
-    }
-
-    public int getTime() {
-        return time;
-    }
-
-    public void setTime(int time) {
-        this.time = time;
+    public void setOrderTime(int orderTime) {
+        this.orderTime = orderTime;
     }
 }
