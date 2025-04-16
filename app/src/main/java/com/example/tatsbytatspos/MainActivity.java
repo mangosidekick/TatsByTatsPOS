@@ -87,7 +87,9 @@ public class MainActivity extends AppCompatActivity {
             productList.add(new Product(R.drawable.product_image, "Product " + i, 19.99 + i));
         }
 
-        productAdapter = new ProductAdapter(productList);
+        boolean showStarButton = false;
+
+        productAdapter = new ProductAdapter(productList, showStarButton);
         recyclerView.setAdapter(productAdapter);
     }
 }

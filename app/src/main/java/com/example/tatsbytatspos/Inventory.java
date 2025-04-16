@@ -29,8 +29,6 @@ public class Inventory extends AppCompatActivity {
     private ProductAdapter productAdapter;
     private List<Product> productList;
     private NavigationView navigationView;
-    private Button confirmButton;
-    private Button resetButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +40,6 @@ public class Inventory extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         sideBarButton = findViewById(R.id.sideBarButton);
         navigationView = findViewById(R.id.navigationView);
-        confirmButton = findViewById(R.id.confirm_button);
-        resetButton = findViewById(R.id.resetButton);
         recyclerView = findViewById(R.id.menuRecyclerView);
 
         // Set up the Toolbar
@@ -80,7 +76,9 @@ public class Inventory extends AppCompatActivity {
             productList.add(new Product(R.drawable.product_image, "Product " + i, 19.99 + i));
         }
 
-        productAdapter = new ProductAdapter(productList);
+        boolean showStarButton = true;
+
+        productAdapter = new ProductAdapter(productList, showStarButton);
         recyclerView.setAdapter(productAdapter);
     }
 }

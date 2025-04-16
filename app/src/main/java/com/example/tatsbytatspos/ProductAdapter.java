@@ -19,9 +19,11 @@ import java.util.List;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
     private List<Product> productList;
+    private boolean showStar;
 
-    public ProductAdapter(List<Product> productList) {
+    public ProductAdapter(List<Product> productList, boolean showStar) {
         this.productList = productList;
+        this.showStar = showStar;
     }
 
     @NonNull
@@ -35,9 +37,24 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         Product currentProduct = productList.get(position);
+
+
+        if (showStar) {
+            holder.star.setVisibility(View.VISIBLE);
+            holder.btnPlus.setVisibility(View.INVISIBLE);
+            holder.btnMinus.setVisibility(View.INVISIBLE);
+        } else {
+            holder.star.setVisibility(View.GONE);
+            holder.btnPlus.setVisibility(View.VISIBLE);
+            holder.btnMinus.setVisibility(View.VISIBLE);
+        }
+
+
         holder.productName.setText(currentProduct.getName());
         holder.productPrice.setText("₱" + currentProduct.getPrice());
         holder.productImage.setImageResource(currentProduct.getImageResource());
+
+
 
         // For Quantity (just an example, you can handle this accordingly)
         holder.btnMinus.setOnClickListener(v -> {
@@ -56,7 +73,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
         ImageView productImage;
         TextView productName, productPrice;
-        ImageButton btnMinus, btnPlus;
+        ImageButton btnMinus, btnPlus, star;
 
         public ProductViewHolder(View itemView) {
             super(itemView);
@@ -65,6 +82,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             productPrice = itemView.findViewById(R.id.product_price);
             btnMinus = itemView.findViewById(R.id.btn_minus);
             btnPlus = itemView.findViewById(R.id.btn_plus);
+            star = itemView.findViewById(R.id.star);
         }
     }
+
 }
