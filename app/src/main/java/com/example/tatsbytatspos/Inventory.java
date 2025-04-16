@@ -35,7 +35,7 @@ public class Inventory extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_inventory);
 
         // Initialize views
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -69,14 +69,6 @@ public class Inventory extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
-
-        // Confirm button action
-        confirmButton.setOnClickListener(v ->
-                Toast.makeText(Inventory.this, "Order confirmed!", Toast.LENGTH_SHORT).show());
-
-        // Reset button action
-        resetButton.setOnClickListener(v ->
-                Toast.makeText(Inventory.this, "Order reset!", Toast.LENGTH_SHORT).show());
 
         // Set up RecyclerView
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2); // 2 columns
