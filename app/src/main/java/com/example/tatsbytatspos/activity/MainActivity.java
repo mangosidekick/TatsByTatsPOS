@@ -13,7 +13,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tatsbytatspos.fragment.MyPopupFragment;
 import com.example.tatsbytatspos.fragment.PaymentFragment;
 import com.example.tatsbytatspos.model.Product;
 import com.example.tatsbytatspos.adapter.ProductAdapter;
@@ -85,8 +84,8 @@ public class MainActivity extends AppCompatActivity {
         });
         */
          confirmButton.setOnClickListener(v->{
-             MyPopupFragment popup = new MyPopupFragment();
-             popup.show(getSupportFragmentManager(), "myPopupTag");
+             PaymentFragment popup = new PaymentFragment();
+             popup.show(getSupportFragmentManager(), "myPaymentTag");
          });
 
 
