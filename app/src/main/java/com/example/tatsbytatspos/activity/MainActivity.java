@@ -6,8 +6,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -15,6 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tatsbytatspos.fragment.MyPopupFragment;
 import com.example.tatsbytatspos.fragment.PaymentFragment;
 import com.example.tatsbytatspos.model.Product;
 import com.example.tatsbytatspos.adapter.ProductAdapter;
@@ -76,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
+        /*
         // Confirm button action
         confirmButton.setOnClickListener(v -> {
             getSupportFragmentManager()
@@ -83,6 +83,11 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.fragment_layout, new PaymentFragment())
                     .commit();
         });
+        */
+         confirmButton.setOnClickListener(v->{
+             MyPopupFragment popup = new MyPopupFragment();
+             popup.show(getSupportFragmentManager(), "myPopupTag");
+         });
 
 
         // Reset button action
@@ -105,3 +110,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(productAdapter);
     }
 }
+
+
+
