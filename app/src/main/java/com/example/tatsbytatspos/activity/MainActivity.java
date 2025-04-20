@@ -77,8 +77,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Confirm button action
-        confirmButton.setOnClickListener(v ->
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout),new PaymentFragment()).commit();
+        confirmButton.setOnClickListener(v -> {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_layout, new PaymentFragment())
+                    .commit();
+        });
+
 
         // Reset button action
         resetButton.setOnClickListener(v ->
