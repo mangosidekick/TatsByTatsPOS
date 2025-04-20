@@ -3,6 +3,7 @@ package com.example.tatsbytatspos.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private Button confirmButton;
     private Button resetButton;
+    private FrameLayout fragmentLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         confirmButton = findViewById(R.id.confirm_button);
         resetButton = findViewById(R.id.resetButton);
         recyclerView = findViewById(R.id.menuRecyclerView);
+        fragmentLayout = findViewById(R.id.fragment_layout);
 
         // Set up the Toolbar
         setSupportActionBar(toolbar);
@@ -75,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Confirm button action
         confirmButton.setOnClickListener(v ->
-                getSupportFragmentManager().beginTransaction().replace(R.id.drawer_layout),new PaymentFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout),new PaymentFragment()).commit();
 
         // Reset button action
         resetButton.setOnClickListener(v ->
