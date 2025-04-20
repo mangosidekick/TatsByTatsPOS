@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Confirm button action
         confirmButton.setOnClickListener(v ->
-                Toast.makeText(MainActivity.this, "Order confirmed!", Toast.LENGTH_SHORT).show());
+                getSupportFragmentManager().beginTransaction().replace(R.id.drawer_layout),new PaymentFragment()).commit();
 
         // Reset button action
         resetButton.setOnClickListener(v ->

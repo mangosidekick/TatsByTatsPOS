@@ -18,4 +18,6 @@
     <string name="close_nav">Close</string>
     <string name="date">May 1 2025</string>
     <string name="time">3:30pm</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
