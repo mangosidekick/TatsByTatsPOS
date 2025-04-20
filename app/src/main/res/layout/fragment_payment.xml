@@ -6,9 +6,13 @@
     tools:context=".fragment.PaymentFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:backgroundTint="@color/orange"
+        android:background="@drawable/round_rectangle">
+
+    </LinearLayout>
 
 </FrameLayout>
