@@ -1,9 +1,8 @@
-package com.example.tatsbytatspos;
+package com.example.tatsbytatspos.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tatsbytatspos.R;
-import com.example.tatsbytatspos.Product;
+import com.example.tatsbytatspos.model.Product;
 
 import java.util.List;
 

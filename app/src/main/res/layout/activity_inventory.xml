@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/grey"
     android:fitsSystemWindows="true"
-    tools:context=".Inventory"
+    tools:context=".activity.Inventory"
     tools:openDrawer="start">
 
     <!-- MAIN CONTENT FIRST -->

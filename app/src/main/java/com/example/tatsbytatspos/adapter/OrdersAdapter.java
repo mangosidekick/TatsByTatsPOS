@@ -1,4 +1,4 @@
-package com.example.tatsbytatspos;
+package com.example.tatsbytatspos.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,8 +7,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tatsbytatspos.Orders;
 import com.example.tatsbytatspos.R;
+import com.example.tatsbytatspos.model.Orders;
 
 import java.util.List;
 

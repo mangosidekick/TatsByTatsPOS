@@ -1,7 +1,8 @@
-package com.example.tatsbytatspos;
+package com.example.tatsbytatspos.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -13,32 +14,40 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tatsbytatspos.fragment.PaymentFragment;
+import com.example.tatsbytatspos.model.Product;
+import com.example.tatsbytatspos.adapter.ProductAdapter;
+import com.example.tatsbytatspos.R;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class OrderHistory extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
     private ImageButton sideBarButton;
     private RecyclerView recyclerView;
-    private OrdersAdapter ordersAdapter;
-    private List<Orders> orderList;
+    private ProductAdapter productAdapter;
+    private List<Product> productList;
     private NavigationView navigationView;
+    private Button confirmButton;
+    private Button resetButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order_history);
+        setContentView(R.layout.activity_main);
 
         // Initialize views
         drawerLayout = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
         sideBarButton = findViewById(R.id.sideBarButton);
         navigationView = findViewById(R.id.navigationView);
+        confirmButton = findViewById(R.id.confirm_button);
+        resetButton = findViewById(R.id.resetButton);
         recyclerView = findViewById(R.id.menuRecyclerView);
 
         // Set up the Toolbar
@@ -52,30 +61,39 @@ public class OrderHistory extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_home) {
-                startActivity(new Intent(OrderHistory.this, MainActivity.class));
+                Toast.makeText(MainActivity.this, "Already on this screen!", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_history) {
-                //startActivity(new Intent(OrderHistory.this, OrderHistory.class));
-                Toast.makeText(OrderHistory.this, "Already on this screen!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, OrderHistory.class));
                 //Toast.makeText(MainActivity.this, "History clicked", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_inventory) {
-                startActivity(new Intent(OrderHistory.this, Inventory.class));
+                startActivity(new Intent(MainActivity.this, Inventory.class));
                 //Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
             }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
 
+        // Confirm button action
+        confirmButton.setOnClickListener(v ->
+                getSupportFragmentManager().beginTransaction().replace(R.id.drawer_layout),new PaymentFragment()).commit();
+
+        // Reset button action
+        resetButton.setOnClickListener(v ->
+                Toast.makeText(MainActivity.this, "Order reset!", Toast.LENGTH_SHORT).show());
+
         // Set up RecyclerView
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 1); // 1 columns
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2); // 2 columns
         recyclerView.setLayoutManager(gridLayoutManager);
 
         // Sample product list
-        orderList = new ArrayList<>();
-        for (int i = 1; i <= 6; i++) {
-            orderList.add(new Orders("Order " + i, i,i));
+        productList = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            productList.add(new Product(R.drawable.product_image, "Product " + i, 19.99 + i));
         }
 
-        ordersAdapter = new OrdersAdapter(orderList);
-        recyclerView.setAdapter(ordersAdapter);
+        boolean showStarButton = false;
+
+        productAdapter = new ProductAdapter(productList, showStarButton);
+        recyclerView.setAdapter(productAdapter);
     }
 }

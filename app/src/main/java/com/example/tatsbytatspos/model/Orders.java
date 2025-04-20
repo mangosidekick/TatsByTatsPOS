@@ -1,4 +1,4 @@
-package com.example.tatsbytatspos;
+package com.example.tatsbytatspos.model;
 
 public class Orders {
     private String orderNumber;

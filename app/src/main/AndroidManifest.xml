@@ -13,13 +13,13 @@
         android:theme="@style/Theme.TatsByTatsPOS"
         tools:targetApi="31">
         <activity
-            android:name=".Inventory"
+            android:name=".activity.Inventory"
             android:exported="false" />
         <activity
-            android:name=".OrderHistory"
+            android:name=".activity.OrderHistory"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

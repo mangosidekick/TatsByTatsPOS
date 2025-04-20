@@ -1,8 +1,7 @@
-package com.example.tatsbytatspos;
+package com.example.tatsbytatspos.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -14,26 +13,29 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tatsbytatspos.model.Orders;
+import com.example.tatsbytatspos.adapter.OrdersAdapter;
+import com.example.tatsbytatspos.R;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Inventory extends AppCompatActivity {
+public class OrderHistory extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
     private ImageButton sideBarButton;
     private RecyclerView recyclerView;
-    private ProductAdapter productAdapter;
-    private List<Product> productList;
+    private OrdersAdapter ordersAdapter;
+    private List<Orders> orderList;
     private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inventory);
+        setContentView(R.layout.activity_order_history);
 
         // Initialize views
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -53,13 +55,13 @@ public class Inventory extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_home) {
-                startActivity(new Intent(Inventory.this, MainActivity.class));
+                startActivity(new Intent(OrderHistory.this, MainActivity.class));
             } else if (id == R.id.nav_history) {
-                startActivity(new Intent(Inventory.this, OrderHistory.class));
+                //startActivity(new Intent(OrderHistory.this, OrderHistory.class));
+                Toast.makeText(OrderHistory.this, "Already on this screen!", Toast.LENGTH_SHORT).show();
                 //Toast.makeText(MainActivity.this, "History clicked", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_inventory) {
-                //startActivity(new Intent(Inventory.this, Inventory.class));
-                Toast.makeText(Inventory.this, "Already on this screen!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(OrderHistory.this, Inventory.class));
                 //Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
             }
             drawerLayout.closeDrawer(GravityCompat.START);
@@ -67,18 +69,16 @@ public class Inventory extends AppCompatActivity {
         });
 
         // Set up RecyclerView
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2); // 2 columns
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 1); // 1 columns
         recyclerView.setLayoutManager(gridLayoutManager);
 
         // Sample product list
-        productList = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
-            productList.add(new Product(R.drawable.product_image, "Product " + i, 19.99 + i));
+        orderList = new ArrayList<>();
+        for (int i = 1; i <= 6; i++) {
+            orderList.add(new Orders("Order " + i, i,i));
         }
 
-        boolean showStarButton = true;
-
-        productAdapter = new ProductAdapter(productList, showStarButton);
-        recyclerView.setAdapter(productAdapter);
+        ordersAdapter = new OrdersAdapter(orderList);
+        recyclerView.setAdapter(ordersAdapter);
     }
 }

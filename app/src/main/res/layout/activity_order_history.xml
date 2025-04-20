@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/grey"
     android:fitsSystemWindows="true"
-    tools:context=".OrderHistory"
+    tools:context=".activity.OrderHistory"
     tools:openDrawer="start">
 
     <!-- MAIN CONTENT FIRST -->
