@@ -74,8 +74,9 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-        /*
+
         // Confirm button action
+        /*
         confirmButton.setOnClickListener(v -> {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -83,10 +84,11 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         });
         */
-         confirmButton.setOnClickListener(v->{
-             PaymentFragment popup = new PaymentFragment();
-             popup.show(getSupportFragmentManager(), "myPaymentTag");
-         });
+
+        confirmButton.setOnClickListener(v -> {
+            PaymentFragment popup = new PaymentFragment();
+            popup.show(getSupportFragmentManager(), "myPaymentTag");
+        });
 
 
         // Reset button action
