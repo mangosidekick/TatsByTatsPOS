@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.tatsbytatspos.R;
 
@@ -23,6 +25,19 @@ public class PaymentFragment extends DialogFragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_payment, container, false);
 
+        Button button = view.findViewById(R.id.paid_cash);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TransactionFragment transactionFragment = new TransactionFragment();
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.transactionFragment);
+                transaction.addToBackStack(null); // Optional: adds the transaction to the back stack
+                transaction.commit();
+            }
+        });
+
+        return view;
     }
 
     @Override
