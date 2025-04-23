@@ -25,7 +25,7 @@ public class PaymentFragment extends DialogFragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_payment, container, false);
 
-        Button button = view.findViewById(R.id.paid_cash);
+        Button button = view.findViewById(R.id.paid_gcash);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
