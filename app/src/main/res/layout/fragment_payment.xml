@@ -76,11 +76,23 @@
             android:textStyle="bold"
             />
 
+        <Button
+            android:id="@+id/paid_gcash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="paid with gcash"
+            android:layout_gravity="center"
+            android:fontFamily="@font/abel"
+            android:textColor="@color/black"
+            android:padding="15sp"
+            android:textSize="20sp"
+            />
+
     <Button
-        android:id="@+id/confirm_transaction"
+        android:id="@+id/paid_cash"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="confirm transaction"
+        android:text="paid with cash"
         android:layout_gravity="center"
         android:fontFamily="@font/abel"
         android:textColor="@color/black"
