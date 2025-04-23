@@ -22,6 +22,7 @@ public class PaymentFragment extends DialogFragment {
                              @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_payment, container, false);
+
     }
 
     @Override
