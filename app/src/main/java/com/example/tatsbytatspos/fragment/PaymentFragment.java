@@ -23,22 +23,24 @@ public class PaymentFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_payment, container, false);
+        View view = inflater.inflate(R.layout.fragment_payment, container, false);
 
+        // Now find views from the inflated view
         Button button = view.findViewById(R.id.paid_cash);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TransactionFragment transactionFragment = new TransactionFragment();
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.transactionFragment);
-                transaction.addToBackStack(null); // Optional: adds the transaction to the back stack
+                //transaction.replace(R.id.fragment_container, transactionFragment); // idk if we need this
+                transaction.addToBackStack(null); // Optional
                 transaction.commit();
             }
         });
 
         return view;
     }
+
 
     @Override
     public void onStart() {
