@@ -31,11 +31,10 @@ public class PaymentFragment extends DialogFragment {
 
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view2) {
                 // Return to MainActivity
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
+                exit.setOnClickListener( dismiss());
+
             }
         });
 
