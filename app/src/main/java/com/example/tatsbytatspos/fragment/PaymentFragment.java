@@ -1,5 +1,6 @@
 package com.example.tatsbytatspos.fragment;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.tatsbytatspos.R;
+import com.example.tatsbytatspos.activity.MainActivity;
+import com.example.tatsbytatspos.activity.OrderHistory;
 
 public class PaymentFragment extends DialogFragment {
 
@@ -22,22 +25,25 @@ public class PaymentFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_payment, container, false);
 
-        // Now find views from the inflated view
-        Button button = view.findViewById(R.id.paid_cash);
-        button.setOnClickListener(new View.OnClickListener() {
+        ImageButton exit = view.findViewById(R.id.exit); // Make sure your XML has a Button with id="exit"
+
+        exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TransactionFragment transactionFragment = new TransactionFragment();
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                //transaction.replace(R.id.fragment_container, transactionFragment); // idk if we need this
-                transaction.addToBackStack(null); // Optional
-                transaction.commit();
+                // Return to MainActivity
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
             }
         });
 
+        Button paidGcash = view.findViewById(R.id.paid_gcash);
+        paidGcash.setOnClickListener(v -> {
+            TransactionFragment transactionFragment = new TransactionFragment();
+            transactionFragment.show(getParentFragmentManager(), "myPaymentTag");
+        });
         return view;
     }
 
@@ -53,4 +59,5 @@ public class PaymentFragment extends DialogFragment {
             getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
     }
+
 }
