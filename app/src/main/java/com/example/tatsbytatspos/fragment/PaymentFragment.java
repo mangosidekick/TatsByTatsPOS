@@ -29,14 +29,8 @@ public class PaymentFragment extends DialogFragment {
 
         ImageButton exit = view.findViewById(R.id.exit); // Make sure your XML has a Button with id="exit"
 
-        exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v2) {
-                // Return to MainActivity
-                exit.setOnClickListener(v -> dismiss());
+        exit.setOnClickListener(v -> dismiss());
 
-            }
-        });
 
         Button paidGcash = view.findViewById(R.id.paid_gcash);
         paidGcash.setOnClickListener(v -> {

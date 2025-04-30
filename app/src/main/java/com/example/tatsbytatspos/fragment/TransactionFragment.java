@@ -24,10 +24,7 @@ public class TransactionFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_transaction, container, false);
 
         ImageButton exit = view.findViewById(R.id.exit);
-        exit.setOnClickListener(v -> {
-            PaymentFragment paymentFragment = new PaymentFragment();
-            paymentFragment.show(getParentFragmentManager(), "myPaymentTag");
-        });
+            exit.setOnClickListener(v -> dismiss());
 
         return view;
     }
