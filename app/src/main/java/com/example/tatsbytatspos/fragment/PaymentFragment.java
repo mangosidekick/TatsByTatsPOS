@@ -31,9 +31,9 @@ public class PaymentFragment extends DialogFragment {
 
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view2) {
+            public void onClick(View v2) {
                 // Return to MainActivity
-                exit.setOnClickListener( dismiss());
+                exit.setOnClickListener(v -> dismiss());
 
             }
         });
