@@ -1,9 +1,12 @@
 package com.example.tatsbytatspos.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,7 +16,7 @@ import com.example.tatsbytatspos.model.Orders;
 import java.util.List;
 
 public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewHolder> {
-
+    private Context context;
     private List<Orders> ordersList;
 
     public OrdersAdapter(List<Orders> ordersList) {
@@ -28,12 +31,18 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         return new OrderViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Orders order = ordersList.get(position);
         holder.orderNumberText.setText(order.getOrderNumber());
         holder.orderDateText.setText("Date: " + order.getOrderDate());
         holder.orderTimeText.setText("Time: " + order.getOrderTime());
+
+        holder.itemView.setOnClickListener(v -> {
+            // Handle click
+            Toast.makeText(context, "clicked" , Toast.LENGTH_SHORT).show();
+        });
     }
 
     @Override
