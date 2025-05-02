@@ -11,11 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tatsbytatspos.R;
+import com.example.tatsbytatspos.fragment.OrderHistoryFragment;
+import com.example.tatsbytatspos.fragment.PaymentFragment;
 import com.example.tatsbytatspos.model.Orders;
 
 import java.util.List;
 
-public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewHolder> {
+public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewHolder>{
     private Context context;
     private List<Orders> ordersList;
 
@@ -41,8 +43,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         holder.orderTimeText.setText("Time: " + order.getOrderTime());
 
         holder.itemView.setOnClickListener(v -> {
-            // Handle the click event here
-            Toast.makeText(context, "Clicked: ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "clicked yippee", Toast.LENGTH_SHORT).show();
         });
     }
 

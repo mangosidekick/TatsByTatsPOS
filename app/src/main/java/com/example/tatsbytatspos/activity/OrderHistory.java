@@ -80,5 +80,6 @@ public class OrderHistory extends AppCompatActivity {
 
         OrdersAdapter ordersAdapter = new OrdersAdapter(this, orderList);
         recyclerView.setAdapter(ordersAdapter);
+
     }
 }
