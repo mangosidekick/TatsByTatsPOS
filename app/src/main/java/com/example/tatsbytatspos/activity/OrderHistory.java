@@ -78,7 +78,7 @@ public class OrderHistory extends AppCompatActivity {
             orderList.add(new Orders("Order " + i, i,i));
         }
 
-        ordersAdapter = new OrdersAdapter(orderList);
+        OrdersAdapter ordersAdapter = new OrdersAdapter(this, orderList);
         recyclerView.setAdapter(ordersAdapter);
     }
 }

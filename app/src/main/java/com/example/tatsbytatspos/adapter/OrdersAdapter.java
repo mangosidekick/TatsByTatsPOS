@@ -19,7 +19,8 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
     private Context context;
     private List<Orders> ordersList;
 
-    public OrdersAdapter(List<Orders> ordersList) {
+    public OrdersAdapter(Context context, List<Orders> ordersList) {
+        this.context = context;
         this.ordersList = ordersList;
     }
 
@@ -40,8 +41,8 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         holder.orderTimeText.setText("Time: " + order.getOrderTime());
 
         holder.itemView.setOnClickListener(v -> {
-            // Handle click
-            Toast.makeText(context, "clicked" , Toast.LENGTH_SHORT).show();
+            // Handle the click event here
+            Toast.makeText(context, "Clicked: ", Toast.LENGTH_SHORT).show();
         });
     }
 
