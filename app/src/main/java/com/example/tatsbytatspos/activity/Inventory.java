@@ -80,7 +80,7 @@ public class Inventory extends AppCompatActivity {
 
         boolean showStarButton = true;
 
-        productAdapter = new ProductAdapter(productList, showStarButton);
+        productAdapter = new ProductAdapter(this, productList, showStarButton);
         recyclerView.setAdapter(productAdapter);
     }
 }

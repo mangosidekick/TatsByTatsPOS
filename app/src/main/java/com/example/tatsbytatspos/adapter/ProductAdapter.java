@@ -1,11 +1,13 @@
 package com.example.tatsbytatspos.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,8 +21,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     private List<Product> productList;
     private boolean showStar;
+    private Context context;
 
-    public ProductAdapter(List<Product> productList, boolean showStar) {
+    public ProductAdapter(Context context, List<Product> productList, boolean showStar) {
+        this.context = context;
         this.productList = productList;
         this.showStar = showStar;
     }
@@ -29,7 +33,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.product_cards, parent, false); // 'item_product' is the layout you provided
+                .inflate(R.layout.product_cards, parent, false);
         return new ProductViewHolder(itemView);
     }
 
@@ -37,7 +41,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         Product currentProduct = productList.get(position);
 
-
+        //the star visibility for the inventory page :)
         if (showStar) {
             holder.star.setVisibility(View.VISIBLE);
             holder.btnPlus.setVisibility(View.INVISIBLE);
@@ -54,13 +58,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.productImage.setImageResource(currentProduct.getImageResource());
 
 
+        // add and subtracting quantity yippee
+        holder.productQuantity.setText(String.valueOf(currentProduct.getQuantity()));
 
-        // For Quantity (just an example, you can handle this accordingly)
-        holder.btnMinus.setOnClickListener(v -> {
-            // Implement logic for decrementing quantity
-        });
         holder.btnPlus.setOnClickListener(v -> {
-            // Implement logic for incrementing quantity
+            int quantity = currentProduct.getQuantity() + 1;
+            currentProduct.setQuantity(quantity);
+            notifyItemChanged(position);
+        });
+        holder.btnMinus.setOnClickListener(v -> {
+            int quantity = currentProduct.getQuantity();
+            if (quantity > 0) {
+                currentProduct.setQuantity(quantity - 1);
+                notifyItemChanged(position);
+            }
         });
     }
 
@@ -71,12 +82,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
         ImageView productImage;
-        TextView productName, productPrice;
+        TextView productName, productPrice, productQuantity;
         ImageButton btnMinus, btnPlus, star;
 
         public ProductViewHolder(View itemView) {
             super(itemView);
             productImage = itemView.findViewById(R.id.product_image);
+            productQuantity = itemView.findViewById(R.id.quantity_text);
             productName = itemView.findViewById(R.id.product_name);
             productPrice = itemView.findViewById(R.id.product_price);
             btnMinus = itemView.findViewById(R.id.btn_minus);

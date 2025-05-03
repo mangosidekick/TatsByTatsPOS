@@ -108,6 +108,7 @@
             android:layout_gravity="center"
             android:fontFamily="@font/abel"
             android:inputType="number"
+            android:textColor="@color/black"
             android:hint="@string/menu_quantity"
             android:text="@string/menu_quantity"
             android:textSize="20sp" />

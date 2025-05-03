@@ -5,11 +5,13 @@ public class Product {
     private int imageResource;
     private String name;
     private double price;
+    private int quantity;
 
     public Product(int imageResource, String name, double price) {
         this.imageResource = imageResource;
         this.name = name;
-        this.price= price;
+        this.price = price;
+        this.quantity = quantity;
     }
 
     public int getImageResource() {
@@ -34,5 +36,13 @@ public class Product {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

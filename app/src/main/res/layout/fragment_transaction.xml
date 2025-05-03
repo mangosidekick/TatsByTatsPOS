@@ -79,13 +79,14 @@
         <Button
             android:id="@+id/paid_cash"
             android:layout_width="wrap_content"
-            android:layout_height="52dp"
+            android:layout_height="wrap_content"
+            android:text="confirm transaction"
             android:layout_gravity="center"
             android:fontFamily="@font/abel"
-            android:padding="15sp"
-            android:text="confirm transaction"
             android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:padding="15sp"
+            android:textSize="20sp"
+            />
 
     </LinearLayout>
 
