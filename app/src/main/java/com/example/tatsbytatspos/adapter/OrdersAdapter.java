@@ -8,9 +8,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tatsbytatspos.R;
+import com.example.tatsbytatspos.fragment.OrderHistoryFragment;
 import com.example.tatsbytatspos.model.Orders;
 
 import java.util.List;
@@ -19,10 +21,12 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
 
     private Context context;
     private List<Orders> ordersList;
+    private FragmentManager fragmentManager;
 
-    public OrdersAdapter(Context context, List<Orders> ordersList) {
+    public OrdersAdapter(Context context, List<Orders> ordersList,FragmentManager fragmentManager ) {
         this.context = context;
         this.ordersList = ordersList;
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -41,10 +45,18 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         holder.orderDateText.setText("Date: " + order.getOrderDate());
         holder.orderTimeText.setText("Time: " + order.getOrderTime());
 
+        /*
+         confirmButton.setOnClickListener(v->{
+             PaymentFragment popup = new PaymentFragment();
+             popup.show(getSupportFragmentManager(), "myPaymentTag");
+         });
+         */
         //this is to make the thingies clickable and show the fragment
         holder.itemView.setOnClickListener(v -> {
             // Handle the click event here
-            Toast.makeText(context, "Clicked: ", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "Clicked: ", Toast.LENGTH_SHORT).show();
+            OrderHistoryFragment popup = new OrderHistoryFragment();
+            popup.show(fragmentManager, "myHistoryTag");
         });
     }
 

@@ -1,6 +1,5 @@
 package com.example.tatsbytatspos.fragment;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,6 +24,7 @@ public class PaymentFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_payment, container, false);
 
         ImageButton exit = view.findViewById(R.id.exit); // Make sure your XML has a Button with id="exit"
@@ -37,6 +37,7 @@ public class PaymentFragment extends DialogFragment {
             TransactionFragment transactionFragment = new TransactionFragment();
             transactionFragment.show(getParentFragmentManager(), "myPaymentTag");
         });
+
         return view;
     }
 
@@ -52,5 +53,4 @@ public class PaymentFragment extends DialogFragment {
             getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
     }
-
 }
