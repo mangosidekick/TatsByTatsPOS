@@ -24,15 +24,15 @@ public class PaymentFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_payment, container, false);
-
         ImageButton exit = view.findViewById(R.id.exit); // Make sure your XML has a Button with id="exit"
-
         exit.setOnClickListener(v -> dismiss());
 
 
         Button paidGcash = view.findViewById(R.id.paid_gcash);
+
         paidGcash.setOnClickListener(v -> {
             TransactionFragment transactionFragment = new TransactionFragment();
             transactionFragment.show(getParentFragmentManager(), "myPaymentTag");

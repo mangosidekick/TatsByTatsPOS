@@ -45,10 +45,10 @@ public class OrderHistory extends AppCompatActivity {
         recyclerView = findViewById(R.id.menuRecyclerView);
 
 
-        //todo: Isn't this redundant code? or is the toolbar just defined here?
-        // Set up the Toolbar
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        //todo Isn't this redundant code? or is the toolbar just defined here
+        //Set up the Toolbar
+        //setSupportActionBar(toolbar);
+        //Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         // Sidebar button opens drawer
         sideBarButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
