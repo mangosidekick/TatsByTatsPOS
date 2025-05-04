@@ -16,6 +16,7 @@ import com.example.tatsbytatspos.model.Orders;
 import java.util.List;
 
 public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewHolder> {
+
     private Context context;
     private List<Orders> ordersList;
 
@@ -40,6 +41,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         holder.orderDateText.setText("Date: " + order.getOrderDate());
         holder.orderTimeText.setText("Time: " + order.getOrderTime());
 
+        //this is to make the thingies clickable and show the fragment
         holder.itemView.setOnClickListener(v -> {
             // Handle the click event here
             Toast.makeText(context, "Clicked: ", Toast.LENGTH_SHORT).show();
