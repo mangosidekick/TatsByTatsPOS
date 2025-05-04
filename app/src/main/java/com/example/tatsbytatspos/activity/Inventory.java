@@ -2,6 +2,7 @@ package com.example.tatsbytatspos.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -49,7 +50,9 @@ public class Inventory extends AppCompatActivity {
 
     FloatingActionButton fab;
     ProductDatabase db;
-    Bitmap selectedImage = null;
+
+    private Bitmap selectedImage = null;
+    private ImageView imagePreviewRef; // <- Hold reference to image preview
 
     ActivityResultLauncher<Intent> imagePickerLauncher;
 
@@ -106,7 +109,7 @@ public class Inventory extends AppCompatActivity {
         productAdapter = new ProductAdapter(this, productList, showStarButton);
         recyclerView.setAdapter(productAdapter);
 
-        //for adding products:3
+        // Setup image picker with callback
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -114,6 +117,9 @@ public class Inventory extends AppCompatActivity {
                         Uri imageUri = result.getData().getData();
                         try {
                             selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                            if (imagePreviewRef != null && selectedImage != null) {
+                                imagePreviewRef.setImageBitmap(selectedImage); // Show preview
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -130,7 +136,7 @@ public class Inventory extends AppCompatActivity {
         EditText editName = dialogView.findViewById(R.id.editName);
         EditText editPrice = dialogView.findViewById(R.id.editPrice);
         EditText editQuantity = dialogView.findViewById(R.id.editQuantity);
-        ImageView imagePreview = dialogView.findViewById(R.id.imagePreview);
+        imagePreviewRef = dialogView.findViewById(R.id.imagePreview); // Set reference
         Button btnPickImage = dialogView.findViewById(R.id.btnPickImage);
 
         btnPickImage.setOnClickListener(v -> {
@@ -139,7 +145,6 @@ public class Inventory extends AppCompatActivity {
         });
 
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("Add Product")
                 .setView(dialogView)
                 .setPositiveButton("Add", (d, which) -> {
                     String name = editName.getText().toString();
@@ -161,10 +166,17 @@ public class Inventory extends AppCompatActivity {
                     } else {
                         Toast.makeText(this, "Insert failed", Toast.LENGTH_SHORT).show();
                     }
+
+                    selectedImage = null; // Reset after adding
+                    imagePreviewRef = null; // Prevent holding onto view
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton("Cancel", (d, which) -> {
+                    selectedImage = null;
+                    imagePreviewRef = null;
+                })
                 .create();
 
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.round_rectangle);
         dialog.show();
     }
 

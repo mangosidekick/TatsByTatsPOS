@@ -5,24 +5,33 @@
     android:orientation="vertical">
 
     <EditText
+        android:fontFamily="@font/abel"
         android:id="@+id/editName"
+        android:textColorHint="@color/orange"
         android:hint="Product Name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:textColor="@color/black"
+        android:layout_height="60sp" />
 
     <EditText
+        android:fontFamily="@font/abel"
         android:id="@+id/editPrice"
         android:hint="Price"
+        android:textColorHint="@color/orange"
         android:inputType="numberDecimal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:textColor="@color/black"
+        android:layout_height="60sp" />
 
     <EditText
+        android:fontFamily="@font/abel"
         android:id="@+id/editQuantity"
         android:hint="Quantity"
+        android:textColorHint="@color/orange"
         android:inputType="number"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:textColor="@color/black"
+        android:layout_height="60sp" />
 
     <ImageView
         android:id="@+id/imagePreview"
@@ -35,8 +44,24 @@
         android:contentDescription="Image Preview" />
 
     <Button
+        android:fontFamily="@font/abel"
         android:id="@+id/btnPickImage"
+        android:textColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Choose Image" />
+
+    <ToggleButton
+        android:fontFamily="@font/abel"
+        android:layout_gravity="center"
+        android:background="@drawable/round_rectangle"
+        android:backgroundTint="@color/orange"
+        android:id="@+id/toggleShow"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:textOn="Show on menu"
+        android:textOff="Hide from menu"
+        android:textColor="@color/black"
+        android:checked="true"
+        android:layout_marginTop="12dp" />
 </LinearLayout>
