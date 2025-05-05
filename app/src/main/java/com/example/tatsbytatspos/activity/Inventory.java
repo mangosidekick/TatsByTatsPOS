@@ -100,14 +100,15 @@ public class Inventory extends AppCompatActivity {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2); // 2 columns
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        loadProductsFromDatabase();
 
         boolean showStarButton = true;
         boolean showInventoryQuantity = true;
 
-        productAdapter = new ProductAdapter(this, productList, showStarButton, showInventoryQuantity);
         productList = new ArrayList<>();
+        productAdapter = new ProductAdapter(this, productList, showStarButton, showInventoryQuantity);
         recyclerView.setAdapter(productAdapter);
+
+        loadProductsFromDatabase();
 
         // Setup image picker with callback
         imagePickerLauncher = registerForActivityResult(
