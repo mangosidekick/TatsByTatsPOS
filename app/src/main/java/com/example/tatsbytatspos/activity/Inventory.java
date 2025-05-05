@@ -3,6 +3,7 @@ package com.example.tatsbytatspos.activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -105,7 +106,10 @@ public class Inventory extends AppCompatActivity {
         boolean showInventoryQuantity = true;
 
         productList = new ArrayList<>();
-        productAdapter = new ProductAdapter(this, productList, showStarButton, showInventoryQuantity);
+        productAdapter = new ProductAdapter(this, productList, showStarButton, showInventoryQuantity, product -> {
+            showEditProductDialog(product);
+
+        });
         recyclerView.setAdapter(productAdapter);
 
         loadProductsFromDatabase();
@@ -216,5 +220,71 @@ public class Inventory extends AppCompatActivity {
         }
 
         productAdapter.updateList(productList);
+    }
+
+    private void showEditProductDialog(Product product) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.dialog_add_product, null);
+
+        EditText editName = dialogView.findViewById(R.id.editName);
+        EditText editPrice = dialogView.findViewById(R.id.editPrice);
+        EditText editQuantity = dialogView.findViewById(R.id.editQuantity);
+        imagePreviewRef = dialogView.findViewById(R.id.imagePreview);
+        Button btnPickImage = dialogView.findViewById(R.id.btnPickImage);
+
+        // Pre-fill values
+        editName.setText(product.getName());
+        editPrice.setText(String.valueOf(product.getPrice()));
+        editQuantity.setText(String.valueOf(product.getQuantity()));
+
+        Bitmap bitmap = BitmapFactory.decodeByteArray(product.getImage(), 0, product.getImage().length);
+        selectedImage = bitmap;
+        imagePreviewRef.setImageBitmap(bitmap);
+
+        btnPickImage.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            imagePickerLauncher.launch(intent);
+        });
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setPositiveButton("Update", (d, which) -> {
+                    String name = editName.getText().toString();
+                    String priceStr = editPrice.getText().toString();
+                    String quantityStr = editQuantity.getText().toString();
+
+                    if (name.isEmpty() || priceStr.isEmpty() || quantityStr.isEmpty() || selectedImage == null) {
+                        Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    double price = Double.parseDouble(priceStr);
+                    int quantity = Integer.parseInt(quantityStr);
+                    byte[] imageBytes = getBytesFromBitmap(selectedImage);
+
+                    boolean success = db.updateProduct(product.getId(), name, price, quantity, imageBytes);
+                    if (success) {
+                        Toast.makeText(this, "Product updated", Toast.LENGTH_SHORT).show();
+                        loadProductsFromDatabase();
+                    } else {
+                        Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show();
+                    }
+
+                    selectedImage = null;
+                    imagePreviewRef = null;
+                })
+                .setNegativeButton("Cancel", (d, which) -> {
+                    selectedImage = null;
+                    imagePreviewRef = null;
+                })
+                .setNeutralButton("Delete", (d, which) -> {
+                    db.deleteProduct(product.getId());
+                    Toast.makeText(this, "Product deleted", Toast.LENGTH_SHORT).show();
+                    loadProductsFromDatabase();
+                })
+                .create();
+
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.round_rectangle);
+        dialog.show();
     }
 }

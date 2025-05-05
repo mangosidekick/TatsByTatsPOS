@@ -22,16 +22,22 @@ import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
+    public interface OnProductClickListener {
+        void onProductClick(Product product);
+    }
+
     private List<Product> productList;
     private boolean showStar;
     private boolean invQuantity;
     private Context context;
+    private OnProductClickListener listener;
 
-    public ProductAdapter(Context context, List<Product> productList, boolean showStar, boolean invQuantity) {
+    public ProductAdapter(Context context, List<Product> productList, boolean showStar, boolean invQuantity, OnProductClickListener listener) {
         this.context = context;
         this.productList = (productList != null) ? productList : new ArrayList<>();
         this.showStar = showStar;
         this.invQuantity = invQuantity;
+        this.listener = listener;
 
     }
 
@@ -73,6 +79,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.productInvQuantity.setText(String.valueOf(currentProduct.getQuantity()));;
         Bitmap bitmap = BitmapFactory.decodeByteArray(currentProduct.getImage(), 0, currentProduct.getImage().length);
         holder.productImage.setImageBitmap(bitmap);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onProductClick(currentProduct);
+            }
+        });
 
 
         // add and subtracting quantity yippee
@@ -121,6 +133,4 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             star = itemView.findViewById(R.id.star);
         }
     }
-
-
 }

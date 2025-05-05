@@ -57,23 +57,22 @@ public class ProductDatabase extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
     }
 
-    // Optional: Update product by ID
+    // Update product by ID
     public boolean updateProduct(int id, String name, double price, int quantity, byte[] image) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COLUMN_NAME, name);
-        values.put(COLUMN_PRICE, price);
-        values.put(COLUMN_QUANTITY, quantity);
-        values.put(COLUMN_IMAGE, image);
-        int result = db.update(TABLE_NAME, values, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
-        return result > 0;
+        values.put("name", name);
+        values.put("price", price);
+        values.put("quantity", quantity);
+        values.put("image", image);
+        int rows = db.update("products", values, "id=?", new String[]{String.valueOf(id)});
+        return rows > 0;
     }
 
-    // Optional: Delete product by ID
     public boolean deleteProduct(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int result = db.delete(TABLE_NAME, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
-        return result > 0;
+        int rows = db.delete("products", "id=?", new String[]{String.valueOf(id)});
+        return rows > 0;
     }
 }
 

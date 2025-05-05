@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(productAdapter);
 
-        productAdapter = new ProductAdapter(this, productList, showStarButton, showInventoryQuantity);
+        productAdapter = new ProductAdapter(this, productList, showStarButton, showInventoryQuantity, null);
         recyclerView.setAdapter(productAdapter);
 
         loadProductsFromDatabase();
