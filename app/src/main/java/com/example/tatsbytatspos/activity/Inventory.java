@@ -106,6 +106,7 @@ public class Inventory extends AppCompatActivity {
         boolean showInventoryQuantity = true;
 
         productAdapter = new ProductAdapter(this, productList, showStarButton, showInventoryQuantity);
+        productList = new ArrayList<>();
         recyclerView.setAdapter(productAdapter);
 
         // Setup image picker with callback
@@ -189,9 +190,13 @@ public class Inventory extends AppCompatActivity {
     }
 
     private void loadProductsFromDatabase() {
-        productList.clear();
-        Cursor cursor = db.getAllProducts();
+        if (productList == null) {
+            productList = new ArrayList<>();
+        } else {
+            productList.clear();
+        }
 
+        Cursor cursor = db.getAllProducts();
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
@@ -200,7 +205,6 @@ public class Inventory extends AppCompatActivity {
                 int quantity = cursor.getInt(cursor.getColumnIndexOrThrow("quantity"));
                 byte[] image = cursor.getBlob(cursor.getColumnIndexOrThrow("image"));
 
-                //error here that says that if i include all 5 arguments, it apparently expects only 3...
                 productList.add(new Product(id, name, price, quantity, image));
             } while (cursor.moveToNext());
             cursor.close();

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tatsbytatspos.R;
 import com.example.tatsbytatspos.model.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
@@ -28,9 +29,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     public ProductAdapter(Context context, List<Product> productList, boolean showStar, boolean invQuantity) {
         this.context = context;
-        this.productList = productList;
+        this.productList = (productList != null) ? productList : new ArrayList<>();
         this.showStar = showStar;
         this.invQuantity = invQuantity;
+
     }
 
     @NonNull
@@ -68,7 +70,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         //the actual products
         holder.productName.setText(currentProduct.getName());
         holder.productPrice.setText("₱" + currentProduct.getPrice());
-        holder.productInvQuantity.setText(" " + currentProduct.getQuantity());
+        holder.productInvQuantity.setText(currentProduct.getQuantity());
         Bitmap bitmap = BitmapFactory.decodeByteArray(currentProduct.getImage(), 0, currentProduct.getImage().length);
         holder.productImage.setImageBitmap(bitmap);
 
@@ -96,8 +98,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     }
 
     public void updateList(List<Product> newList) {
-        productList = newList;
-        notifyDataSetChanged();
+        if (newList != null) {
+            productList = newList;
+            notifyDataSetChanged();
+        }
     }
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
@@ -117,5 +121,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             star = itemView.findViewById(R.id.star);
         }
     }
+
 
 }
