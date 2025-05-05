@@ -70,7 +70,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         //the actual products
         holder.productName.setText(currentProduct.getName());
         holder.productPrice.setText("₱" + currentProduct.getPrice());
-        holder.productInvQuantity.setText(currentProduct.getQuantity());
+        holder.productInvQuantity.setText(String.valueOf(currentProduct.getQuantity()));;
         Bitmap bitmap = BitmapFactory.decodeByteArray(currentProduct.getImage(), 0, currentProduct.getImage().length);
         holder.productImage.setImageBitmap(bitmap);
 

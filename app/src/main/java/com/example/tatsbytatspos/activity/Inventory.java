@@ -152,24 +152,25 @@ public class Inventory extends AppCompatActivity {
                     String priceStr = editPrice.getText().toString();
                     String quantityStr = editQuantity.getText().toString();
 
-                    if (name.isEmpty() || priceStr.isEmpty() || quantityStr.isEmpty() || selectedImage == null) {
-                        Toast.makeText(this, "Please fill all fields and pick an image", Toast.LENGTH_SHORT).show();
-                        return;
-                    }else{
-                        Toast.makeText(this, "Product added", Toast.LENGTH_SHORT).show();
-                        loadProductsFromDatabase(); // ← Refresh the RecyclerView
-                    }
-
                     double price = Double.parseDouble(priceStr);
                     int quantity = Integer.parseInt(quantityStr);
                     byte[] imageBytes = getBytesFromBitmap(selectedImage);
 
                     boolean success = db.insertProduct(name, price, quantity, imageBytes);
+
                     if (success) {
                         Toast.makeText(this, "Product added", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, "Insert failed", Toast.LENGTH_SHORT).show();
                     }
+
+                    if (success) {
+                        Toast.makeText(this, "Product added", Toast.LENGTH_SHORT).show();
+                        loadProductsFromDatabase();
+                    } else {
+                        Toast.makeText(this, "Insert failed", Toast.LENGTH_SHORT).show();
+                    }
+
 
                     selectedImage = null; // Reset after adding
                     imagePreviewRef = null; // Prevent holding onto view
@@ -185,8 +186,11 @@ public class Inventory extends AppCompatActivity {
     }
 
     private byte[] getBytesFromBitmap(Bitmap bitmap) {
+        // Resize the image to a max width/height (e.g., 300x300)
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, true);
+
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        resizedBitmap.compress(Bitmap.CompressFormat.PNG, 80, stream); // 80% quality
         return stream.toByteArray();
     }
 
