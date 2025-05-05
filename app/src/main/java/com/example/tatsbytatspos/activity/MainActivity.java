@@ -1,6 +1,7 @@
 package com.example.tatsbytatspos.activity;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -13,6 +14,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tatsbytatspos.data.ProductDatabase;
 import com.example.tatsbytatspos.fragment.PaymentFragment;
 import com.example.tatsbytatspos.model.Product;
 import com.example.tatsbytatspos.adapter.ProductAdapter;
@@ -34,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private Button confirmButton;
     private Button resetButton;
+    ProductDatabase db;
+
     private FrameLayout fragmentLayout;
 
     @Override
@@ -50,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
         resetButton = findViewById(R.id.resetButton);
         recyclerView = findViewById(R.id.menuRecyclerView);
         fragmentLayout = findViewById(R.id.fragment_layout);
+
+        db = new ProductDatabase(this);
+        productList = new ArrayList<>();
 
         // Set up the Toolbar
         setSupportActionBar(toolbar);
@@ -91,8 +98,38 @@ public class MainActivity extends AppCompatActivity {
         boolean showStarButton = false;
         boolean showInventoryQuantity = false;
 
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.setAdapter(productAdapter);
+
         productAdapter = new ProductAdapter(this, productList, showStarButton, showInventoryQuantity);
         recyclerView.setAdapter(productAdapter);
+
+        loadProductsFromDatabase();
+
+    }
+
+    private void loadProductsFromDatabase() {
+        if (productList == null) {
+            productList = new ArrayList<>();
+        } else {
+            productList.clear();
+        }
+
+        Cursor cursor = db.getAllProducts();
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                double price = cursor.getDouble(cursor.getColumnIndexOrThrow("price"));
+                int quantity = cursor.getInt(cursor.getColumnIndexOrThrow("quantity"));
+                byte[] image = cursor.getBlob(cursor.getColumnIndexOrThrow("image"));
+
+                productList.add(new Product(id, name, price, quantity, image));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        productAdapter.updateList(productList);
     }
 }
 

@@ -76,7 +76,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
 
         // add and subtracting quantity yippee
-        holder.productQuantity.setText(String.valueOf(currentProduct.getQuantity()));
+        holder.productQuantity.setText("0");
 
         holder.btnPlus.setOnClickListener(v -> {
             int quantity = currentProduct.getQuantity() + 1;
