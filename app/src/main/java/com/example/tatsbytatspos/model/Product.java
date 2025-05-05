@@ -6,12 +6,14 @@ public class Product {
     private String name;
     private double price;
     private int quantity;
+    private byte[] image;
 
     public Product(int imageResource, String name, double price) {
         this.imageResource = imageResource;
         this.name = name;
         this.price = price;
         this.quantity = quantity;
+        this.image = image;
     }
 
     public int getImageResource() {
@@ -45,4 +47,6 @@ public class Product {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+    public byte[] getImage() { return image; }
+
 }

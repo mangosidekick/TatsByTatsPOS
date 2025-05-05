@@ -1,6 +1,7 @@
 package com.example.tatsbytatspos.activity;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -70,6 +71,7 @@ public class Inventory extends AppCompatActivity {
         fab = findViewById(R.id.fab);
         db = new ProductDatabase(this);
 
+
         // Set up the Toolbar
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
@@ -98,6 +100,8 @@ public class Inventory extends AppCompatActivity {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2); // 2 columns
         recyclerView.setLayoutManager(gridLayoutManager);
 
+        loadProductsFromDatabase();
+
         // Sample product list
         productList = new ArrayList<>();
         for (int i = 1; i <= 10; i++) {
@@ -105,8 +109,9 @@ public class Inventory extends AppCompatActivity {
         }
 
         boolean showStarButton = true;
+        boolean showInventoryQuantity = true;
 
-        productAdapter = new ProductAdapter(this, productList, showStarButton);
+        productAdapter = new ProductAdapter(this, productList, showStarButton, showInventoryQuantity);
         recyclerView.setAdapter(productAdapter);
 
         // Setup image picker with callback
@@ -154,6 +159,9 @@ public class Inventory extends AppCompatActivity {
                     if (name.isEmpty() || priceStr.isEmpty() || quantityStr.isEmpty() || selectedImage == null) {
                         Toast.makeText(this, "Please fill all fields and pick an image", Toast.LENGTH_SHORT).show();
                         return;
+                    }else{
+                        Toast.makeText(this, "Product added", Toast.LENGTH_SHORT).show();
+                        loadProductsFromDatabase(); // ← Refresh the RecyclerView
                     }
 
                     double price = Double.parseDouble(priceStr);
@@ -184,5 +192,26 @@ public class Inventory extends AppCompatActivity {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();
+    }
+
+    private void loadProductsFromDatabase() {
+        productList.clear();
+        Cursor cursor = db.getAllProducts();
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                double price = cursor.getDouble(cursor.getColumnIndexOrThrow("price"));
+                int quantity = cursor.getInt(cursor.getColumnIndexOrThrow("quantity"));
+                byte[] image = cursor.getBlob(cursor.getColumnIndexOrThrow("image"));
+
+                //error here that says that if i include all 5 arguments, it apparently expects only 3...
+                productList.add(new Product(id, name, price, quantity, image));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        productAdapter.updateList(productList);
     }
 }

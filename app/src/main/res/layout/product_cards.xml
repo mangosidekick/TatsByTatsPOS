@@ -113,6 +113,21 @@
             android:text="@string/menu_quantity"
             android:textSize="20sp" />
 
+        <EditText
+            android:gravity="center"
+            android:id="@+id/quantity_inventory_text"
+            android:backgroundTint="@android:color/transparent"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:fontFamily="@font/abel"
+            android:inputType="number"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            android:hint="@string/menu_quantity"
+            android:text="5"
+            android:textSize="20sp" />
+
         <!-- Plus Button -->
         <ImageButton
             android:contentDescription="@string/plus"

@@ -95,8 +95,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         boolean showStarButton = false;
+        boolean showInventoryQuantity = false;
 
-        productAdapter = new ProductAdapter(this, productList, showStarButton);
+        productAdapter = new ProductAdapter(this, productList, showStarButton, showInventoryQuantity);
         recyclerView.setAdapter(productAdapter);
     }
 }

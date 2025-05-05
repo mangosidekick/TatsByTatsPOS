@@ -1,6 +1,8 @@
 package com.example.tatsbytatspos.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +23,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     private List<Product> productList;
     private boolean showStar;
+    private boolean invQuantity;
     private Context context;
 
-    public ProductAdapter(Context context, List<Product> productList, boolean showStar) {
+    public ProductAdapter(Context context, List<Product> productList, boolean showStar, boolean invQuantity) {
         this.context = context;
         this.productList = productList;
         this.showStar = showStar;
+        this.invQuantity = invQuantity;
     }
 
     @NonNull
@@ -52,10 +56,21 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             holder.btnMinus.setVisibility(View.VISIBLE);
         }
 
+        //the quantity visibility for the inventory page :)
+        if (invQuantity) {
+            holder.productInvQuantity.setVisibility(View.VISIBLE);
+            holder.productQuantity.setVisibility(View.GONE);
+        } else {
+            holder.productInvQuantity.setVisibility(View.GONE);
+            holder.productQuantity.setVisibility(View.VISIBLE);
+        }
 
+        //the actual products
         holder.productName.setText(currentProduct.getName());
         holder.productPrice.setText("₱" + currentProduct.getPrice());
-        holder.productImage.setImageResource(currentProduct.getImageResource());
+        holder.productInvQuantity.setText(" " + currentProduct.getQuantity());
+        Bitmap bitmap = BitmapFactory.decodeByteArray(currentProduct.getImage(), 0, currentProduct.getImage().length);
+        holder.productImage.setImageBitmap(bitmap);
 
 
         // add and subtracting quantity yippee
@@ -80,15 +95,21 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         return productList.size();
     }
 
+    public void updateList(List<Product> newList) {
+        productList = newList;
+        notifyDataSetChanged();
+    }
+
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
         ImageView productImage;
-        TextView productName, productPrice, productQuantity;
+        TextView productName, productPrice, productQuantity, productInvQuantity;
         ImageButton btnMinus, btnPlus, star;
 
         public ProductViewHolder(View itemView) {
             super(itemView);
             productImage = itemView.findViewById(R.id.product_image);
             productQuantity = itemView.findViewById(R.id.quantity_text);
+            productInvQuantity = itemView.findViewById(R.id.quantity_inventory_text);
             productName = itemView.findViewById(R.id.product_name);
             productPrice = itemView.findViewById(R.id.product_price);
             btnMinus = itemView.findViewById(R.id.btn_minus);
