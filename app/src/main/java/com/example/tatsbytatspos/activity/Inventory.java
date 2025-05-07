@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -27,7 +26,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tatsbytatspos.data.ProductDatabase;
+import com.example.tatsbytatspos.data.Database;
 import com.example.tatsbytatspos.model.Product;
 import com.example.tatsbytatspos.adapter.ProductAdapter;
 import com.example.tatsbytatspos.R;
@@ -51,7 +50,7 @@ public class Inventory extends AppCompatActivity {
     private NavigationView navigationView;
 
     FloatingActionButton fab;
-    ProductDatabase db;
+    Database db;
 
     private Bitmap selectedImage = null;
     private ImageView imagePreviewRef; // <- Hold reference to image preview
@@ -70,7 +69,7 @@ public class Inventory extends AppCompatActivity {
         navigationView = findViewById(R.id.navigationView);
         recyclerView = findViewById(R.id.menuRecyclerView);
         fab = findViewById(R.id.fab);
-        db = new ProductDatabase(this);
+        db = new Database(this);
 
 
         // Set up the Toolbar

@@ -14,7 +14,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tatsbytatspos.data.ProductDatabase;
+import com.example.tatsbytatspos.data.Database;
 import com.example.tatsbytatspos.fragment.PaymentFragment;
 import com.example.tatsbytatspos.model.Product;
 import com.example.tatsbytatspos.adapter.ProductAdapter;
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private Button confirmButton;
     private Button resetButton;
-    ProductDatabase db;
+    Database db;
 
     private FrameLayout fragmentLayout;
 
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.menuRecyclerView);
         fragmentLayout = findViewById(R.id.fragment_layout);
 
-        db = new ProductDatabase(this);
+        db = new Database(this);
         productList = new ArrayList<>();
 
         // Set up the Toolbar
