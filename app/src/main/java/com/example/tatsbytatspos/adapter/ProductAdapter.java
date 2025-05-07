@@ -9,13 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tatsbytatspos.R;
-import com.example.tatsbytatspos.data.OrderDatabase;
 import com.example.tatsbytatspos.model.Product;
 
 import java.util.ArrayList;
@@ -32,7 +30,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     private boolean invQuantity;
     private Context context;
     private OnProductClickListener listener;
-    private OrderDatabase orderDatabase;
 
     public ProductAdapter(Context context, List<Product> productList, boolean showStar, boolean invQuantity, OnProductClickListener listener) {
         this.context = context;
@@ -40,8 +37,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         this.showStar = showStar;
         this.invQuantity = invQuantity;
         this.listener = listener;
-        this.orderDatabase = orderDatabase;
-
     }
 
     @NonNull
