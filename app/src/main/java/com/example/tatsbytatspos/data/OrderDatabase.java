@@ -1,5 +1,7 @@
 package com.example.tatsbytatspos.data;
 
+import static com.example.tatsbytatspos.data.ProductDatabase.TABLE_NAME;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -14,6 +16,7 @@ public class OrderDatabase extends SQLiteOpenHelper {
     // Order Table
     private static final String TABLE_ORDERS = "orders";
     private static final String COLUMN_ORDER_ID = "order_id";
+    private static final String COLUMN_ORDER_NUMBER = "order_number";
     private static final String COLUMN_PAYMENT_METHOD = "payment_method";
     private static final String COLUMN_DATE = "date";
     private static final String COLUMN_TIME = "time";
@@ -57,13 +60,18 @@ public class OrderDatabase extends SQLiteOpenHelper {
     }
 
     // Insert an order and return the new order ID
-    public long insertOrder(String paymentMethod, String date, String time) {
+    public boolean insertOrder(String orderNumber, String name, double price, int quantity, String paymentMethod, String date, String time) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(COLUMN_ORDER_NUMBER, orderNumber);
+        values.put(COLUMN_PRODUCT_NAME, name);
+        values.put(COLUMN_PRODUCT_PRICE, price);
+        values.put(COLUMN_QUANTITY, quantity);
         values.put(COLUMN_PAYMENT_METHOD, paymentMethod);
         values.put(COLUMN_DATE, date);
         values.put(COLUMN_TIME, time);
-        return db.insert(TABLE_ORDERS, null, values);
+        long result = db.insert(TABLE_NAME, null, values);
+        return result != -1;
     }
 
     // Insert a product item for an order
