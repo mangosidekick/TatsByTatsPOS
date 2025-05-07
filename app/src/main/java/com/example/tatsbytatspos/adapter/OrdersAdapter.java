@@ -45,12 +45,6 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         holder.orderDateText.setText("Date: " + order.getOrderDate());
         holder.orderTimeText.setText("Time: " + order.getOrderTime());
 
-        /*
-         confirmButton.setOnClickListener(v->{
-             PaymentFragment popup = new PaymentFragment();
-             popup.show(getSupportFragmentManager(), "myPaymentTag");
-         });
-         */
         //this is to make the thingies clickable and show the fragment
         holder.itemView.setOnClickListener(v -> {
             // Handle the click event here

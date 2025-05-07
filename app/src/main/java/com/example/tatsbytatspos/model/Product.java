@@ -5,6 +5,7 @@ public class Product {
     private String name;
     private double price;
     private int quantity;
+    private int orderquantity;
     private byte[] image;
 
     public Product(int id, String name, double price, int quantity, byte[] image) {
@@ -33,6 +34,14 @@ public class Product {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public void setOrderQuantity(int orderquantity) {
+        this.orderquantity = orderquantity;
+    }
+
+    public int getOrderQuantity() {
+        return orderquantity;
     }
 
     // Getters

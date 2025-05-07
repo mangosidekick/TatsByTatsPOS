@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tatsbytatspos.R;
+import com.example.tatsbytatspos.data.OrderDatabase;
 import com.example.tatsbytatspos.model.Product;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     private boolean invQuantity;
     private Context context;
     private OnProductClickListener listener;
+    private OrderDatabase orderDatabase;
 
     public ProductAdapter(Context context, List<Product> productList, boolean showStar, boolean invQuantity, OnProductClickListener listener) {
         this.context = context;
@@ -38,6 +40,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         this.showStar = showStar;
         this.invQuantity = invQuantity;
         this.listener = listener;
+        this.orderDatabase = orderDatabase;
 
     }
 
@@ -88,17 +91,17 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
 
         // add and subtracting quantity yippee
-        holder.productQuantity.setText("0");
+        holder.productQuantity.setText(String.valueOf(currentProduct.getOrderQuantity()));
 
         holder.btnPlus.setOnClickListener(v -> {
-            int quantity = currentProduct.getQuantity() + 1;
-            currentProduct.setQuantity(quantity);
+            int quantity = currentProduct.getOrderQuantity() + 1;
+            currentProduct.setOrderQuantity(quantity);
             notifyItemChanged(position);
         });
         holder.btnMinus.setOnClickListener(v -> {
-            int quantity = currentProduct.getQuantity();
+            int quantity = currentProduct.getOrderQuantity();
             if (quantity > 0) {
-                currentProduct.setQuantity(quantity - 1);
+                currentProduct.setOrderQuantity(quantity - 1);
                 notifyItemChanged(position);
             }
         });

@@ -98,9 +98,10 @@ public class Inventory extends AppCompatActivity {
         });
 
         // Set up RecyclerView
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2); // 2 columns
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 4); // 2 columns
         recyclerView.setLayoutManager(gridLayoutManager);
 
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
 
         boolean showStarButton = true;
         boolean showInventoryQuantity = true;

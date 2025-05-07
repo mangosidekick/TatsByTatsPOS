@@ -92,13 +92,13 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Order reset!", Toast.LENGTH_SHORT).show());
 
         // Set up RecyclerView
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2); // 2 columns
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 4); // 2 columns
         recyclerView.setLayoutManager(gridLayoutManager);
 
         boolean showStarButton = false;
         boolean showInventoryQuantity = false;
 
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         recyclerView.setAdapter(productAdapter);
 
         productAdapter = new ProductAdapter(this, productList, showStarButton, showInventoryQuantity, null);
