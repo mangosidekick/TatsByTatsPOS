@@ -81,15 +81,6 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-         confirmButton.setOnClickListener(v->{
-             PaymentFragment popup = new PaymentFragment();
-             popup.show(getSupportFragmentManager(), "myPaymentTag");
-         });
-
-
-        // Reset button action
-        resetButton.setOnClickListener(v ->
-                Toast.makeText(MainActivity.this, "Order reset!", Toast.LENGTH_SHORT).show());
 
         // Set up RecyclerView
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2); // 2 columns
@@ -125,10 +116,44 @@ public class MainActivity extends AppCompatActivity {
                 byte[] image = cursor.getBlob(cursor.getColumnIndexOrThrow("image"));
 
                 productList.add(new Product(id, name, price, quantity, image));
+
             } while (cursor.moveToNext());
             cursor.close();
         }
         productAdapter.updateList(productList);
+
+        //confirm button shenanigans.
+        confirmButton.setOnClickListener(v->{
+
+            List<Product> selectedProducts = new ArrayList<>();
+
+            for (Product product : productAdapter.getProductList()) {
+                if (product.getOrderQuantity() > 0) {
+                    selectedProducts.add(product);
+                }
+            }
+
+            List<Integer> productIds = new ArrayList<>();
+            List<Integer> quantities = new ArrayList<>();
+
+            for (Product product : productAdapter.getProductList()) {
+                if (product.getOrderQuantity() > 0) {
+                    productIds.add(product.getId());
+                    quantities.add(product.getOrderQuantity());
+                }
+            }
+
+// Insert the full order into the order and order_items tables
+            db.insertOrderWithItems(productIds, quantities, null, null);
+            PaymentFragment popup = new PaymentFragment();
+            popup.show(getSupportFragmentManager(), "myPaymentTag");
+        });
+
+
+        // Reset button action
+        resetButton.setOnClickListener(v ->
+                Toast.makeText(MainActivity.this, "Order reset!", Toast.LENGTH_SHORT).show());
+
     }
 }
 

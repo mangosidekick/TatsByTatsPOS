@@ -55,14 +55,23 @@
             android:maxHeight="300sp"
             android:orientation="vertical"
             >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="burgir"
-                android:textSize="25sp"
-                android:fontFamily="@font/abel"
-                android:textColor="@color/black"
-                />
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp">
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/order_summary_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="#000000" />
+                </ScrollView>
+            </FrameLayout>
         </LinearLayout>
 
         <TextView

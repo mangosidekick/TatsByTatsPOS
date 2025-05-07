@@ -20,6 +20,16 @@ import com.example.tatsbytatspos.activity.OrderHistory;
 
 public class PaymentFragment extends DialogFragment {
 
+    private static final String ARG_ORDER_SUMMARY = "order_summary";
+
+    public static PaymentFragment newInstance(String summary) {
+        PaymentFragment fragment = new PaymentFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_ORDER_SUMMARY, summary);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -30,6 +40,11 @@ public class PaymentFragment extends DialogFragment {
         ImageButton exit = view.findViewById(R.id.exit); // Make sure your XML has a Button with id="exit"
         exit.setOnClickListener(v -> dismiss());
 
+        TextView orderTextView = view.findViewById(R.id.order_summary_text);
+        if (getArguments() != null) {
+            String summary = getArguments().getString(ARG_ORDER_SUMMARY);
+            orderTextView.setText(summary);
+        }
 
         Button paidGcash = view.findViewById(R.id.paid_gcash);
 
