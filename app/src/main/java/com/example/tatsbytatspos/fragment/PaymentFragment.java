@@ -1,7 +1,9 @@
 package com.example.tatsbytatspos.fragment;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -82,8 +86,17 @@ public class PaymentFragment extends DialogFragment {
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
         input.setHint("Enter a number");
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Input Number")
+        // Fix purple text and tint
+
+        Typeface typeface = ResourcesCompat.getFont(getContext(), R.font.abel);
+        int orangeColor = ContextCompat.getColor(getContext(), R.color.orange);
+
+        input.setTextColor(Color.BLACK); // Set desired text color
+        input.setHintTextColor(orangeColor); // Set desired hint color
+        input.setTypeface(typeface);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.MyDialogTheme);
+        builder.setTitle("Input Cash Amount")
                 .setView(input)
                 .setPositiveButton("Enter", (dialog, which) -> {
                     String numberStr = input.getText().toString().trim();
@@ -99,8 +112,8 @@ public class PaymentFragment extends DialogFragment {
                     } else {
                         Toast.makeText(getContext(), "Please enter a number", Toast.LENGTH_SHORT).show();
                     }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
+                });
+                builder.setNegativeButton("Cancel", null);
+                builder.show();
     }
 }

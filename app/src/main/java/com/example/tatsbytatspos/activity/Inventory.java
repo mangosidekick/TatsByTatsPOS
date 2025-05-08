@@ -246,7 +246,7 @@ public class Inventory extends AppCompatActivity {
             imagePickerLauncher.launch(intent);
         });
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
+        AlertDialog dialog = new AlertDialog.Builder(this, R.style.MyDialogTheme)
                 .setView(dialogView)
                 .setPositiveButton("Update", (d, which) -> {
                     String name = editName.getText().toString();

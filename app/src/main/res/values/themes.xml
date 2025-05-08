@@ -8,4 +8,26 @@
     </style>
 
     <style name="Theme.TatsByTatsPOS" parent="Base.Theme.TatsByTatsPOS"/>
+
+    <style name="MyDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <!-- Dialog background and title text -->
+        <item name="colorPrimary">@color/black</item> <!-- Your desired color -->
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="titleTextColor">@color/black</item>
+        <item name="android:textColorPrimary">@color/orange</item>
+        <item name="fontFamily">@font/abel</item>
+        <item name="background">@drawable/round_rectangle</item>
+
+        <!-- Button styles -->
+        <item name="buttonBarPositiveButtonStyle">@style/MyPositiveButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/MyNegativeButton</item>
+    </style>
+
+    <style name="MyPositiveButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/orange</item> <!-- Blue -->
+    </style>
+
+    <style name="MyNegativeButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/orange</item> <!-- Red -->
+    </style>
 </resources>

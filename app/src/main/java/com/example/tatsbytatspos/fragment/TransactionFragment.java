@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.tatsbytatspos.R;
 
@@ -25,6 +27,17 @@ public class TransactionFragment extends DialogFragment {
 
         ImageButton exit = view.findViewById(R.id.exit);
             exit.setOnClickListener(v -> dismiss());
+
+        Button confirm = view.findViewById(R.id.confirm);
+        confirm.setOnClickListener(v -> {
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager(); // Access the activity's fragments
+
+        for (Fragment fragment : fragmentManager.getFragments()) {
+            if (fragment instanceof DialogFragment && fragment.isAdded() && !fragment.isRemoving()) {
+                ((DialogFragment) fragment).dismiss();
+            }
+        }
+    });
 
         return view;
     }
