@@ -114,6 +114,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         }
     }
 
+    public List<Product> getProductList() {
+        return productList;
+    }
+
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
         ImageView productImage;
         TextView productName, productPrice, productQuantity, productInvQuantity;

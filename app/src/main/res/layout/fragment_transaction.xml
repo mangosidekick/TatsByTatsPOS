@@ -77,7 +77,7 @@
             />
 
         <Button
-            android:id="@+id/paid_cash"
+            android:id="@+id/confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="confirm transaction"

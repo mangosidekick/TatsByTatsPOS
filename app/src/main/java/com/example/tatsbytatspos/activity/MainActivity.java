@@ -14,7 +14,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tatsbytatspos.data.ProductDatabase;
+import com.example.tatsbytatspos.data.Database;
 import com.example.tatsbytatspos.fragment.PaymentFragment;
 import com.example.tatsbytatspos.model.Product;
 import com.example.tatsbytatspos.adapter.ProductAdapter;
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private Button confirmButton;
     private Button resetButton;
-    ProductDatabase db;
+    Database db;
 
     private FrameLayout fragmentLayout;
 
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.menuRecyclerView);
         fragmentLayout = findViewById(R.id.fragment_layout);
 
-        db = new ProductDatabase(this);
+        db = new Database(this);
         productList = new ArrayList<>();
 
         // Set up the Toolbar
@@ -81,15 +81,6 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-         confirmButton.setOnClickListener(v->{
-             PaymentFragment popup = new PaymentFragment();
-             popup.show(getSupportFragmentManager(), "myPaymentTag");
-         });
-
-
-        // Reset button action
-        resetButton.setOnClickListener(v ->
-                Toast.makeText(MainActivity.this, "Order reset!", Toast.LENGTH_SHORT).show());
 
         // Set up RecyclerView
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2); // 2 columns
@@ -125,10 +116,44 @@ public class MainActivity extends AppCompatActivity {
                 byte[] image = cursor.getBlob(cursor.getColumnIndexOrThrow("image"));
 
                 productList.add(new Product(id, name, price, quantity, image));
+
             } while (cursor.moveToNext());
             cursor.close();
         }
         productAdapter.updateList(productList);
+
+        //confirm button shenanigans.
+        confirmButton.setOnClickListener(v->{
+
+            List<Product> selectedProducts = new ArrayList<>();
+
+            for (Product product : productAdapter.getProductList()) {
+                if (product.getOrderQuantity() > 0) {
+                    selectedProducts.add(product);
+                }
+            }
+
+            List<Integer> productIds = new ArrayList<>();
+            List<Integer> quantities = new ArrayList<>();
+
+            for (Product product : productAdapter.getProductList()) {
+                if (product.getOrderQuantity() > 0) {
+                    productIds.add(product.getId());
+                    quantities.add(product.getOrderQuantity());
+                }
+            }
+
+// Insert the full order into the order and order_items tables
+            db.insertOrderWithItems(productIds, quantities, null, null);
+            PaymentFragment popup = new PaymentFragment();
+            popup.show(getSupportFragmentManager(), "myPaymentTag");
+        });
+
+
+        // Reset button action
+        resetButton.setOnClickListener(v ->
+                Toast.makeText(MainActivity.this, "Order reset!", Toast.LENGTH_SHORT).show());
+
     }
 }
 
