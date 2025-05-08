@@ -68,8 +68,9 @@
                         android:id="@+id/order_summary_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textColor="#000000" />
+                        android:textSize="25sp"
+                        android:fontFamily="@font/abel"
+                        android:textColor="@color/black" />
                 </ScrollView>
             </FrameLayout>
         </LinearLayout>

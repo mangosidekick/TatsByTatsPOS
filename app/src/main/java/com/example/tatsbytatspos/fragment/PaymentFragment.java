@@ -1,14 +1,22 @@
 package com.example.tatsbytatspos.fragment;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.tatsbytatspos.R;
@@ -53,23 +61,15 @@ public class PaymentFragment extends DialogFragment {
         Button paidGcash = view.findViewById(R.id.paid_gcash);
         Button paidCash = view.findViewById(R.id.paid_cash);
 
-        paidCash.setOnClickListener(v -> {
-            if (paymentListener != null) {
-                paymentListener.onPaymentConfirmed("CASH");
-                dismiss();
-            }
-        });
+        paidCash.setOnClickListener(v -> showNumberInputDialog());
 
         paidGcash.setOnClickListener(v -> {
-            if (paymentListener != null) {
-                paymentListener.onPaymentConfirmed("GCASH");
-                dismiss();
-            }
+            TransactionFragment transactionFragment = new TransactionFragment();
+            transactionFragment.show(getParentFragmentManager(), "myPaymentTag");
         });
 
         return view;
     }
-
 
     @Override
     public void onStart() {
@@ -82,4 +82,35 @@ public class PaymentFragment extends DialogFragment {
             getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
     }
+
+    private void showNumberInputDialog() {
+        EditText input = new EditText(getContext());
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setHint("Enter a number");
+
+        Typeface typeface = ResourcesCompat.getFont(getContext(), R.font.abel);
+        int orangeColor = ContextCompat.getColor(getContext(), R.color.orange);
+
+        input.setTextColor(Color.BLACK); // Set desired text color
+        input.setHintTextColor(orangeColor); // Set desired hint color
+        input.setTypeface(typeface);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.MyDialogTheme);
+        builder.setTitle("Input Cash Amount")
+                .setView(input)
+                .setPositiveButton("Enter", (dialog, which) -> {
+                    String numberStr = input.getText().toString().trim();
+                    if (!numberStr.isEmpty()) {
+                        int number = Integer.parseInt(numberStr);
+
+                        // Navigate to the next fragment and pass the number
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("number", number);
+                    } else {
+                        Toast.makeText(getContext(), "Please enter a number", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder.setNegativeButton("Cancel", null);
+                builder.show();
+            }
 }
