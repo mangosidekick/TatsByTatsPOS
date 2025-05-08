@@ -1,5 +1,9 @@
 package com.example.tatsbytatspos.activity;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -50,10 +54,10 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         sideBarButton = findViewById(R.id.sideBarButton);
         navigationView = findViewById(R.id.navigationView);
-        confirmButton = findViewById(R.id.confirm_button);
-        resetButton = findViewById(R.id.resetButton);
+        confirmButton = findViewById(R.id.confirmButton);
+        resetButton = findViewById(R.id.reset_button);
         recyclerView = findViewById(R.id.menuRecyclerView);
-        fragmentLayout = findViewById(R.id.fragment_layout);
+        fragmentLayout = findViewById(R.id.fragmentLayout);
 
         db = new Database(this);
         productList = new ArrayList<>();
@@ -89,9 +93,6 @@ public class MainActivity extends AppCompatActivity {
         boolean showStarButton = false;
         boolean showInventoryQuantity = false;
 
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        recyclerView.setAdapter(productAdapter);
-
         productAdapter = new ProductAdapter(this, productList, showStarButton, showInventoryQuantity, null);
         recyclerView.setAdapter(productAdapter);
 
@@ -122,40 +123,93 @@ public class MainActivity extends AppCompatActivity {
         }
         productAdapter.updateList(productList);
 
-        //confirm button shenanigans.
-        confirmButton.setOnClickListener(v->{
-
-            List<Product> selectedProducts = new ArrayList<>();
-
+        //confirm button action
+        confirmButton.setOnClickListener(v -> {
+            // Check if any products are selected
+            boolean hasSelectedProducts = false;
             for (Product product : productAdapter.getProductList()) {
                 if (product.getOrderQuantity() > 0) {
-                    selectedProducts.add(product);
+                    hasSelectedProducts = true;
+                    break;
                 }
             }
 
-            List<Integer> productIds = new ArrayList<>();
-            List<Integer> quantities = new ArrayList<>();
-
-            for (Product product : productAdapter.getProductList()) {
-                if (product.getOrderQuantity() > 0) {
-                    productIds.add(product.getId());
-                    quantities.add(product.getOrderQuantity());
-                }
+            if (!hasSelectedProducts) {
+                Toast.makeText(MainActivity.this, "Please select at least one product", Toast.LENGTH_SHORT).show();
+                return;
             }
 
-// Insert the full order into the order and order_items tables
-            db.insertOrderWithItems(productIds, quantities, null, null);
-            PaymentFragment popup = new PaymentFragment();
+            // Generate order summary
+            StringBuilder summary = new StringBuilder();
+            double total = 0.0;
+            for (Product product : productAdapter.getProductList()) {
+                if (product.getOrderQuantity() > 0) {
+                    double itemTotal = product.getPrice() * product.getOrderQuantity();
+                    summary.append(product.getName())
+                            .append(" x")
+                            .append(product.getOrderQuantity())
+                            .append(" = ₱")
+                            .append(String.format(Locale.getDefault(), "%.2f", itemTotal))
+                            .append("\n");
+                    total += itemTotal;
+                }
+            }
+            summary.append("\nTotal: ₱").append(String.format(Locale.getDefault(), "%.2f", total));
+
+            // Show payment fragment with order summary
+            PaymentFragment popup = PaymentFragment.newInstance(summary.toString());
+
+            // Set a listener to handle payment confirmation
+            popup.setOnPaymentConfirmedListener((paymentMethod) -> {
+                if (paymentMethod == null || paymentMethod.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Invalid payment method", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Collect selected products
+                List<Integer> productIds = new ArrayList<>();
+                List<Integer> quantities = new ArrayList<>();
+
+                for (Product product : productAdapter.getProductList()) {
+                    if (product.getOrderQuantity() > 0) {
+                        productIds.add(product.getId());
+                        quantities.add(product.getOrderQuantity());
+                    }
+                }
+
+                // Get current datetime
+                String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+
+                // Insert the order with the confirmed payment method
+                boolean success = db.insertOrderWithItems(productIds, quantities, currentDateTime, paymentMethod);
+
+                if (success) {
+                    Toast.makeText(MainActivity.this, "Order completed successfully!", Toast.LENGTH_SHORT).show();
+                    resetOrder(); // Reset after successful order
+                } else {
+                    Toast.makeText(MainActivity.this, "Failed to complete order. Please try again.", Toast.LENGTH_SHORT).show();
+                }
+            });
+
             popup.show(getSupportFragmentManager(), "myPaymentTag");
         });
 
 
         // Reset button action
-        resetButton.setOnClickListener(v ->
-                Toast.makeText(MainActivity.this, "Order reset!", Toast.LENGTH_SHORT).show());
+        resetButton.setOnClickListener(v -> {
+            resetOrder();
+            Toast.makeText(MainActivity.this, "Order reset!", Toast.LENGTH_SHORT).show();
+        });
 
     }
+
+    // Method to reset all product order quantities
+    private void resetOrder() {
+        if (productAdapter != null && productAdapter.getProductList() != null) {
+            for (Product product : productAdapter.getProductList()) {
+                product.setOrderQuantity(0);
+            }
+            productAdapter.notifyDataSetChanged();
+        }
+    }
 }
-
-
-

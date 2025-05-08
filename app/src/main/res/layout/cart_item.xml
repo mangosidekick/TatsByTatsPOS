@@ -63,7 +63,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Decrease quantity"
                     android:padding="8dp"
-                    android:src="@android:drawable/ic_menu_remove" />
+                    android:src="@android:drawable/ic_menu_close_clear_cancel" />
 
                 <TextView
                     android:id="@+id/quantityTextView"

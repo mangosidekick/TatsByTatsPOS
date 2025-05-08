@@ -75,7 +75,7 @@ public class Order {
         calculateTotal();
     }
 
-    private void calculateTotal() {
+    public void calculateTotal() {
         this.totalAmount = 0;
         for (OrderItem item : orderItems) {
             this.totalAmount += item.getSubtotal();

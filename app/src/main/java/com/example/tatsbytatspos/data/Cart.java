@@ -4,6 +4,7 @@ import android.content.Context;
 import com.example.tatsbytatspos.model.Order;
 import com.example.tatsbytatspos.model.OrderItem;
 import com.example.tatsbytatspos.model.Product;
+import com.example.tatsbytatspos.data.Database;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,12 +12,12 @@ import java.util.List;
 public class Cart {
     private Order currentOrder;
     private OrderDatabase orderDatabase;
-    private ProductDatabase productDatabase;
+    private Database productDatabase;
     private static Cart instance;
 
     private Cart(Context context) {
         orderDatabase = new OrderDatabase(context);
-        productDatabase = new ProductDatabase(context);
+        productDatabase = new Database(context);
         currentOrder = new Order();
     }
 
@@ -119,12 +120,12 @@ public class Cart {
         android.database.Cursor cursor = productDatabase.getAllProducts();
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                int id = cursor.getInt(cursor.getColumnIndexOrThrow(ProductDatabase.COLUMN_ID));
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(Database.COLUMN_ID));
                 if (id == productId) {
-                    String name = cursor.getString(cursor.getColumnIndexOrThrow(ProductDatabase.COLUMN_NAME));
-                    double price = cursor.getDouble(cursor.getColumnIndexOrThrow(ProductDatabase.COLUMN_PRICE));
-                    int quantity = cursor.getInt(cursor.getColumnIndexOrThrow(ProductDatabase.COLUMN_QUANTITY));
-                    byte[] image = cursor.getBlob(cursor.getColumnIndexOrThrow(ProductDatabase.COLUMN_IMAGE));
+                    String name = cursor.getString(cursor.getColumnIndexOrThrow(Database.COLUMN_NAME));
+                    double price = cursor.getDouble(cursor.getColumnIndexOrThrow(Database.COLUMN_PRICE));
+                    int quantity = cursor.getInt(cursor.getColumnIndexOrThrow(Database.COLUMN_QUANTITY));
+                    byte[] image = cursor.getBlob(cursor.getColumnIndexOrThrow(Database.COLUMN_IMAGE));
                     cursor.close();
                     return new Product(id, name, price, quantity, image);
                 }

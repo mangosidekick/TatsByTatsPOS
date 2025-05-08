@@ -48,7 +48,7 @@ public class OrderDatabase extends SQLiteOpenHelper {
                 COLUMN_UNIT_PRICE + " REAL NOT NULL, " +
                 COLUMN_SUBTOTAL + " REAL NOT NULL, " +
                 "FOREIGN KEY(" + COLUMN_ORDER_ID + ") REFERENCES " + TABLE_ORDERS + "(" + COLUMN_ORDER_ID + "), " +
-                "FOREIGN KEY(" + COLUMN_PRODUCT_ID + ") REFERENCES " + ProductDatabase.TABLE_NAME + "(" + ProductDatabase.COLUMN_ID + "))";
+                "FOREIGN KEY(" + COLUMN_PRODUCT_ID + ") REFERENCES " + Database.TABLE_NAME + "(" + Database.COLUMN_ID + "))";
 
         db.execSQL(createOrdersTable);
         db.execSQL(createOrderItemsTable);
