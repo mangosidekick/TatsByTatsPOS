@@ -141,7 +141,10 @@ public class MainActivity extends AppCompatActivity {
 
             // Generate order summary
             StringBuilder summary = new StringBuilder();
+            StringBuilder totalSummary = new StringBuilder();
+
             double total = 0.0;
+
             for (Product product : productAdapter.getProductList()) {
                 if (product.getOrderQuantity() > 0) {
                     double itemTotal = product.getPrice() * product.getOrderQuantity();
@@ -154,10 +157,14 @@ public class MainActivity extends AppCompatActivity {
                     total += itemTotal;
                 }
             }
-            summary.append("\nTotal: ₱").append(String.format(Locale.getDefault(), "%.2f", total));
+            totalSummary.append("Total: ₱")
+                    .append(String.format(Locale.getDefault(), "%.2f", total));
 
             // Show payment fragment with order summary
-            PaymentFragment popup = PaymentFragment.newInstance(summary.toString());
+            PaymentFragment popup = PaymentFragment.newInstance(
+                    summary.toString(),
+                    totalSummary.toString()
+            );
 
             // Set a listener to handle payment confirmation
             popup.setOnPaymentConfirmedListener((paymentMethod) -> {

@@ -76,10 +76,10 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/total"
             android:textAlignment="center"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:text="total amout: 20 P"
             android:textColor="@color/black"
             android:textSize="25sp"
             android:fontFamily="@font/abel"

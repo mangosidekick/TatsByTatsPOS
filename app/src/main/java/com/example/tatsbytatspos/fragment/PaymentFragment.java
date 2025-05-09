@@ -23,7 +23,9 @@ import com.example.tatsbytatspos.R;
 
 public class PaymentFragment extends DialogFragment {
 
+
     private static final String ARG_ORDER_SUMMARY = "order_summary";
+    private static final String ARG_ORDER_TOTAL = "order_total";
     private OnPaymentConfirmedListener paymentListener;
 
     public interface OnPaymentConfirmedListener {
@@ -34,10 +36,11 @@ public class PaymentFragment extends DialogFragment {
         this.paymentListener = listener;
     }
 
-    public static PaymentFragment newInstance(String summary) {
+    public static PaymentFragment newInstance(String summary, String totalSummary) {
         PaymentFragment fragment = new PaymentFragment();
         Bundle args = new Bundle();
         args.putString(ARG_ORDER_SUMMARY, summary);
+        args.putString(ARG_ORDER_TOTAL, totalSummary);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,6 +59,11 @@ public class PaymentFragment extends DialogFragment {
         if (getArguments() != null) {
             String summary = getArguments().getString(ARG_ORDER_SUMMARY);
             orderTextView.setText(summary);
+        }
+        TextView totalTextView = view.findViewById(R.id.total);
+        if (getArguments() != null) {
+            String totalSummary = getArguments().getString(ARG_ORDER_TOTAL);
+            totalTextView.setText(totalSummary);
         }
 
         Button paidGcash = view.findViewById(R.id.paid_gcash);
