@@ -109,6 +109,7 @@
             android:fontFamily="@font/abel"
             android:inputType="number"
             android:textColor="@color/black"
+            android:imeOptions="actionDone"
             android:hint="@string/menu_quantity"
             android:text="@string/menu_quantity"
             android:textSize="20sp" />

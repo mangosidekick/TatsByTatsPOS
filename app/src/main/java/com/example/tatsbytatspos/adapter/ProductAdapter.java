@@ -3,9 +3,11 @@ package com.example.tatsbytatspos.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -99,6 +101,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 currentProduct.setOrderQuantity(quantity - 1);
                 notifyItemChanged(position);
             }
+        });
+
+        holder.productQuantity.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE ||
+                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+
+                String input = holder.productQuantity.getText().toString().trim();
+                if (!input.isEmpty()) {
+                    int enteredQty = Integer.parseInt(input);
+                    currentProduct.setOrderQuantity(enteredQty);
+                }
+                return true;
+            }
+            return false;
         });
     }
 
