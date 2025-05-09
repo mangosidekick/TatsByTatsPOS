@@ -71,9 +71,12 @@ public class PaymentFragment extends DialogFragment {
 
         paidCash.setOnClickListener(v -> showNumberInputDialog());
 
+        String summary = getArguments().getString("summary");
+        String total = getArguments().getString("totalSummary");
+
         paidGcash.setOnClickListener(v -> {
-            TransactionFragment transactionFragment = new TransactionFragment();
-            transactionFragment.show(getParentFragmentManager(), "myPaymentTag");
+            TransactionFragment transactionFragment = TransactionFragment.newInstance(summary, total);
+            transactionFragment.show(getParentFragmentManager(), "transactionFragmentTag");
         });
 
         return view;

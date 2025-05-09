@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tatsbytatspos.data.Database;
 import com.example.tatsbytatspos.fragment.PaymentFragment;
+import com.example.tatsbytatspos.fragment.TransactionFragment;
 import com.example.tatsbytatspos.model.Product;
 import com.example.tatsbytatspos.adapter.ProductAdapter;
 import com.example.tatsbytatspos.R;
@@ -172,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Invalid payment method", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
 
                 // Collect selected products
                 List<Integer> productIds = new ArrayList<>();
