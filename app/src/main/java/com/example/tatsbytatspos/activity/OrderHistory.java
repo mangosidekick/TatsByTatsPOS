@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -16,14 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tatsbytatspos.model.Orders;
 import com.example.tatsbytatspos.adapter.OrdersAdapter;
 import com.example.tatsbytatspos.R;
+import com.example.tatsbytatspos.database.DatabaseHelper;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class OrderHistory extends AppCompatActivity {
-
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
     private ImageButton sideBarButton;
@@ -31,11 +29,15 @@ public class OrderHistory extends AppCompatActivity {
     private OrdersAdapter ordersAdapter;
     private List<Orders> orderList;
     private NavigationView navigationView;
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
+
+        // Initialize database helper
+        dbHelper = new DatabaseHelper(this);
 
         // Initialize views
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -43,12 +45,6 @@ public class OrderHistory extends AppCompatActivity {
         sideBarButton = findViewById(R.id.sideBarButton);
         navigationView = findViewById(R.id.navigationView);
         recyclerView = findViewById(R.id.menuRecyclerView);
-
-
-        //todo Isn't this redundant code? or is the toolbar just defined here
-        //Set up the Toolbar
-        //setSupportActionBar(toolbar);
-        //Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         // Sidebar button opens drawer
         sideBarButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
@@ -59,29 +55,44 @@ public class OrderHistory extends AppCompatActivity {
             if (id == R.id.nav_home) {
                 startActivity(new Intent(OrderHistory.this, MainActivity.class));
             } else if (id == R.id.nav_history) {
-                //startActivity(new Intent(OrderHistory.this, OrderHistory.class));
                 Toast.makeText(OrderHistory.this, "Already on this screen!", Toast.LENGTH_SHORT).show();
-                //Toast.makeText(MainActivity.this, "History clicked", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_inventory) {
                 startActivity(new Intent(OrderHistory.this, Inventory.class));
-                //Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
             }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
 
         // Set up RecyclerView
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 1); // 1 columns
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        // Sample product list
+        // Initialize order list
         orderList = new ArrayList<>();
-        for (int i = 1; i <= 6; i++) {
-            orderList.add(new Orders("Order " + i, i,i));
-        }
-
-        OrdersAdapter ordersAdapter = new OrdersAdapter(this, orderList, getSupportFragmentManager());
+        ordersAdapter = new OrdersAdapter(this, orderList, getSupportFragmentManager());
         recyclerView.setAdapter(ordersAdapter);
 
+        // Load orders from database
+        refreshOrderList();
+    }
+
+    public void refreshOrderList() {
+        orderList.clear();
+        // Make sure dbHelper is initialized
+        if (dbHelper == null) {
+            dbHelper = new DatabaseHelper(this);
+        }
+        // Get all orders from the database
+        List<Orders> orders = dbHelper.getAllOrders();
+        if (orders != null) {
+            orderList.addAll(orders);
+        }
+        ordersAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshOrderList();
     }
 }

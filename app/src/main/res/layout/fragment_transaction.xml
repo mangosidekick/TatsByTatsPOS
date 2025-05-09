@@ -78,13 +78,56 @@
             android:id="@+id/total"
             android:textAlignment="center"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:textSize="25sp"
             android:fontFamily="@font/abel"
-            android:layout_weight="1"
             android:textStyle="bold"
+            android:layout_marginBottom="10sp"
             />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="15sp"
+            android:background="@drawable/round_rectangle"
+            android:backgroundTint="@color/grey"
+            android:layout_marginBottom="15sp">
+
+            <TextView
+                android:id="@+id/payment_method"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:fontFamily="@font/abel"
+                android:textStyle="bold"
+                android:layout_marginBottom="10sp"
+                />
+
+            <TextView
+                android:id="@+id/amount_paid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:fontFamily="@font/abel"
+                android:textStyle="bold"
+                android:layout_marginBottom="10sp"
+                />
+
+            <TextView
+                android:id="@+id/change"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:fontFamily="@font/abel"
+                android:textStyle="bold"
+                android:layout_marginBottom="10sp"
+                />
+        </LinearLayout>
 
         <Button
             android:id="@+id/confirm"

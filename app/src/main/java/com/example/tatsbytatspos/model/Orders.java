@@ -1,34 +1,56 @@
 package com.example.tatsbytatspos.model;
 
 public class Orders {
-    private String orderNumber;
-    private int orderDate;
-    private int orderTime;
+    private int id;
+    private String orderSummary;
+    private double totalAmount;
+    private String paymentMethod;
+    private String paymentStatus;
 
-    public Orders(String orderNumber, int orderDate, int orderTime) {
-        this.orderNumber = orderNumber;
-        this.orderDate = orderDate;
-        this.orderTime = orderTime;
-    }
-
-    public String getOrderNumber() {
-        return orderNumber;
-    }
-    public void setOrderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
+    public Orders(String orderSummary, double totalAmount, String paymentMethod, String paymentStatus) {
+        this.orderSummary = orderSummary;
+        this.totalAmount = totalAmount;
+        this.paymentMethod = paymentMethod;
+        this.paymentStatus = paymentStatus;
     }
 
-    public int getOrderDate() {
-        return orderDate;
-    }
-    public void setOrderDate(int orderDate) {
-        this.orderDate = orderDate;
+    public int getId() {
+        return id;
     }
 
-    public int getOrderTime() {
-        return orderTime;
+    public void setId(int id) {
+        this.id = id;
     }
-    public void setOrderTime(int orderTime) {
-        this.orderTime = orderTime;
+
+    public String getOrderSummary() {
+        return orderSummary;
+    }
+
+    public void setOrderSummary(String orderSummary) {
+        this.orderSummary = orderSummary;
+    }
+
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 }

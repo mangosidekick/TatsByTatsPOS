@@ -23,7 +23,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
     private List<Orders> ordersList;
     private FragmentManager fragmentManager;
 
-    public OrdersAdapter(Context context, List<Orders> ordersList,FragmentManager fragmentManager ) {
+    public OrdersAdapter(Context context, List<Orders> ordersList, FragmentManager fragmentManager) {
         this.context = context;
         this.ordersList = ordersList;
         this.fragmentManager = fragmentManager;
@@ -37,18 +37,14 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         return new OrderViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Orders order = ordersList.get(position);
-        holder.orderNumberText.setText(order.getOrderNumber());
-        holder.orderDateText.setText("Date: " + order.getOrderDate());
-        holder.orderTimeText.setText("Time: " + order.getOrderTime());
+        holder.orderNumberText.setText("Order #" + order.getId());
+        holder.orderDateText.setText("Amount: $" + String.format("%.2f", order.getTotalAmount()));
+        holder.orderTimeText.setText("Payment: " + order.getPaymentMethod() + " (" + order.getPaymentStatus() + ")");
 
-        //this is to make the thingies clickable and show the fragment
         holder.itemView.setOnClickListener(v -> {
-            // Handle the click event here
-            //Toast.makeText(context, "Clicked: ", Toast.LENGTH_SHORT).show();
             OrderHistoryFragment popup = new OrderHistoryFragment();
             popup.show(fragmentManager, "myHistoryTag");
         });
