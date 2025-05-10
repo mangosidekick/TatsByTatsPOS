@@ -44,14 +44,30 @@
             android:padding="20sp">
 
             <TextView
-                android:id="@+id/order_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/abel"
+                android:text="Order Details"
+                android:textAlignment="center"
+                android:textSize="24sp"
+                android:textStyle="bold"
                 android:textColor="@color/black"
-                android:textSize="18sp"
-                android:lineSpacingExtra="4dp"
-                android:padding="10dp" />
+                android:fontFamily="@font/abel"
+                android:layout_marginBottom="10dp" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/order_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/abel"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:lineSpacingExtra="8dp"
+                    android:padding="10dp" />
+            </ScrollView>
         </LinearLayout>
 
     </LinearLayout>

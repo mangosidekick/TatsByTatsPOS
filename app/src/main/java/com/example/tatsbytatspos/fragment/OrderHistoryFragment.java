@@ -59,22 +59,51 @@ public class OrderHistoryFragment extends DialogFragment {
 
         // Load and display order details
         if (orderId != -1 && dbHelper != null) {
-            Orders order = dbHelper.getOrderById(orderId);
-            if (order != null) {
-                // Format and display order details
-                StringBuilder details = new StringBuilder();
-                details.append("Order #").append(order.getId()).append("\n\n");
-                details.append("Items:\n").append(order.getOrderSummary()).append("\n\n");
-                details.append("Total Amount: ₱").append(String.format("%.2f", order.getTotalAmount())).append("\n");
-                details.append("Payment Method: ").append(order.getPaymentMethod()).append("\n");
-                details.append("Status: ").append(order.getPaymentStatus());
+            try {
+                Orders order = dbHelper.getOrderById(orderId);
+                if (order != null) {
+                    // Format and display order details with better formatting
+                    StringBuilder details = new StringBuilder();
+                    details.append("ORDER #").append(order.getId()).append("\n\n");
+                    details.append("ITEMS:\n");
 
-                orderDetailsTextView.setText(details.toString());
-            } else {
-                orderDetailsTextView.setText("Order details not found");
+                    // Format the order summary for better readability
+                    String orderSummary = order.getOrderSummary();
+                    if (orderSummary != null && !orderSummary.isEmpty()) {
+                        // Split by line breaks if they exist
+                        String[] items = orderSummary.split("\\n");
+                        for (String item : items) {
+                            details.append("• ").append(item).append("\n");
+                        }
+                    } else {
+                        details.append("No items found\n");
+                    }
+
+                    details.append("\nTOTAL AMOUNT: ₱").append(String.format("%.2f", order.getTotalAmount())).append("\n\n");
+                    details.append("PAYMENT METHOD: ").append(order.getPaymentMethod()).append("\n\n");
+                    details.append("STATUS: ").append(order.getPaymentStatus());
+
+                    orderDetailsTextView.setText(details.toString());
+
+                    // Log success for debugging
+                    Toast.makeText(getContext(), "Order details loaded successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    orderDetailsTextView.setText("Order details not found. Order ID: " + orderId);
+                    Toast.makeText(getContext(), "Order not found in database", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                orderDetailsTextView.setText("Error loading order details: " + e.getMessage());
+                Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
             }
         } else {
-            orderDetailsTextView.setText("No order selected");
+            orderDetailsTextView.setText("No order selected or database error");
+            if (orderId == -1) {
+                Toast.makeText(getContext(), "Invalid order ID", Toast.LENGTH_SHORT).show();
+            }
+            if (dbHelper == null) {
+                Toast.makeText(getContext(), "Database connection error", Toast.LENGTH_SHORT).show();
+            }
         }
 
         return view;

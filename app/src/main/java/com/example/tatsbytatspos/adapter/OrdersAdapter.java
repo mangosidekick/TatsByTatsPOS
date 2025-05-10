@@ -41,12 +41,18 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Orders order = ordersList.get(position);
         holder.orderNumberText.setText("Order #" + order.getId());
-        holder.orderDateText.setText("Amount: $" + String.format("%.2f", order.getTotalAmount()));
+        holder.orderDateText.setText("Amount: ₱" + String.format("%.2f", order.getTotalAmount()));
         holder.orderTimeText.setText("Payment: " + order.getPaymentMethod() + " (" + order.getPaymentStatus() + ")");
 
         holder.itemView.setOnClickListener(v -> {
-            OrderHistoryFragment popup = new OrderHistoryFragment();
-            popup.show(fragmentManager, "myHistoryTag");
+            try {
+                OrderHistoryFragment popup = OrderHistoryFragment.newInstance(order.getId());
+                popup.show(fragmentManager, "orderHistoryDialog");
+                Toast.makeText(context, "Loading order #" + order.getId(), Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Toast.makeText(context, "Error opening order details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
         });
     }
 
