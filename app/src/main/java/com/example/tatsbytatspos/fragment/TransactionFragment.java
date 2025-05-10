@@ -80,22 +80,44 @@ public class TransactionFragment extends DialogFragment {
         Button confirm = view.findViewById(R.id.confirm);
         confirm.setOnClickListener(v -> {
             try {
-                // Show success message first so user gets immediate feedback
-                if (getContext() != null) {
-                    Toast.makeText(getContext(), "Transaction completed successfully!", Toast.LENGTH_LONG).show();
+                // Get order details from arguments
+                if (getArguments() == null) return;
+
+                String summary = getArguments().getString(ARG_ORDER_SUMMARY);
+                String totalStr = getArguments().getString(ARG_ORDER_TOTAL, "0");
+                String paymentMethod = getArguments().getString(ARG_PAYMENT_METHOD);
+                double totalAmount = Double.parseDouble(totalStr.replaceAll("[^\\d.]|\\.(?!\\d)", ""));
+
+                // Ensure database helper is initialized
+                if (dbHelper == null) {
+                    dbHelper = new DatabaseHelper(requireContext());
                 }
 
-                // Close all dialogs and refresh order history
-                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                for (Fragment fragment : fragmentManager.getFragments()) {
-                    if (fragment instanceof DialogFragment && fragment.isAdded() && !fragment.isRemoving()) {
-                        ((DialogFragment) fragment).dismiss();
+                // Save order to database
+                long orderId = dbHelper.insertOrder(summary, totalAmount, paymentMethod, "Completed");
+
+                if (orderId != -1) {
+                    // Show success message
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(), "Transaction completed successfully!", Toast.LENGTH_LONG).show();
                     }
-                }
 
-                // Refresh the order history if applicable
-                if (getActivity() instanceof OrderHistory) {
-                    ((OrderHistory) getActivity()).refreshOrderList();
+                    // Close all dialogs and refresh order history
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    for (Fragment fragment : fragmentManager.getFragments()) {
+                        if (fragment instanceof DialogFragment && fragment.isAdded() && !fragment.isRemoving()) {
+                            ((DialogFragment) fragment).dismiss();
+                        }
+                    }
+
+                    // Refresh the order history if applicable
+                    if (getActivity() instanceof OrderHistory) {
+                        ((OrderHistory) getActivity()).refreshOrderList();
+                    }
+                } else {
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(), "Failed to save transaction", Toast.LENGTH_SHORT).show();
+                    }
                 }
             } catch (Exception e) {
                 if (getContext() != null) {

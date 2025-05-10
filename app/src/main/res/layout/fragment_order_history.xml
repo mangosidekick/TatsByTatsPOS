@@ -44,12 +44,14 @@
             android:padding="20sp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/order_details"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/abel"
-                android:text="burgir"
                 android:textColor="@color/black"
-                android:textSize="25sp" />
+                android:textSize="18sp"
+                android:lineSpacingExtra="4dp"
+                android:padding="10dp" />
         </LinearLayout>
 
     </LinearLayout>

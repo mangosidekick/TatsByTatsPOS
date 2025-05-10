@@ -80,30 +80,18 @@ public class PaymentFragment extends DialogFragment {
 
         paidGcash.setOnClickListener(v -> {
             try {
-                // Verify context and database helper are available
-                if (getContext() == null) {
+                // Verify context is available
+                if (getContext() == null || !isAdded() || isRemoving()) {
                     return;
                 }
 
-                // Ensure database helper is initialized
-                if (dbHelper == null) {
-                    dbHelper = new DatabaseHelper(requireContext());
-                }
+                // Show transaction confirmation without saving to database yet
+                if (isAdded() && !isRemoving()) {
+                    showTransactionConfirmation("GCash", totalAmount, 0.0);
 
-                // Process payment
-                long orderId = dbHelper.insertOrder(orderSummary, totalAmount, "GCash", "Completed");
-                if (orderId != -1) {
                     // Notify listener if available
                     if (paymentListener != null) {
                         paymentListener.onPaymentConfirmed("GCash");
-                    }
-                    // Show transaction confirmation
-                    if (isAdded() && !isRemoving()) {
-                        showTransactionConfirmation("GCash", totalAmount, 0.0);
-                    }
-                } else {
-                    if (getContext() != null && isAdded()) {
-                        Toast.makeText(getContext(), "Failed to process payment", Toast.LENGTH_SHORT).show();
                     }
                 }
             } catch (Exception e) {
@@ -159,25 +147,13 @@ public class PaymentFragment extends DialogFragment {
                                     if (cashAmount >= totalAmount) {
                                         double change = cashAmount - totalAmount;
 
-                                        // Ensure database helper is initialized
-                                        if (dbHelper == null) {
-                                            dbHelper = new DatabaseHelper(requireContext());
-                                        }
+                                        // Show transaction confirmation without saving to database yet
+                                        if (isAdded() && !isRemoving()) {
+                                            showTransactionConfirmation("Cash", cashAmount, change);
 
-                                        // Process payment
-                                        long orderId = dbHelper.insertOrder(orderSummary, totalAmount, "Cash", "Completed");
-                                        if (orderId != -1) {
                                             // Notify listener if available
                                             if (paymentListener != null) {
                                                 paymentListener.onPaymentConfirmed("Cash");
-                                            }
-                                            // Show transaction confirmation
-                                            if (isAdded() && !isRemoving()) {
-                                                showTransactionConfirmation("Cash", cashAmount, change);
-                                            }
-                                        } else {
-                                            if (getContext() != null && isAdded()) {
-                                                Toast.makeText(getContext(), "Failed to process payment", Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     } else {
