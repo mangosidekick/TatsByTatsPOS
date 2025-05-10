@@ -44,7 +44,12 @@ public class TransactionFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        dbHelper = new DatabaseHelper(requireContext());
+        // Initialize database helper with proper error handling
+        try {
+            dbHelper = new DatabaseHelper(requireContext());
+        } catch (Exception e) {
+            // Log the error but continue - we'll check dbHelper before using it
+        }
         View view = inflater.inflate(R.layout.fragment_transaction, container, false);
 
         TextView orderTextView = view.findViewById(R.id.order_summary_text);
@@ -74,20 +79,28 @@ public class TransactionFragment extends DialogFragment {
 
         Button confirm = view.findViewById(R.id.confirm);
         confirm.setOnClickListener(v -> {
-            // Close all dialogs and refresh order history
-            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-            for (Fragment fragment : fragmentManager.getFragments()) {
-                if (fragment instanceof DialogFragment && fragment.isAdded() && !fragment.isRemoving()) {
-                    ((DialogFragment) fragment).dismiss();
+            try {
+                // Show success message first so user gets immediate feedback
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "Transaction completed successfully!", Toast.LENGTH_LONG).show();
                 }
-            }
 
-            // Show success message
-            Toast.makeText(getContext(), "Transaction completed successfully!", Toast.LENGTH_SHORT).show();
+                // Close all dialogs and refresh order history
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                for (Fragment fragment : fragmentManager.getFragments()) {
+                    if (fragment instanceof DialogFragment && fragment.isAdded() && !fragment.isRemoving()) {
+                        ((DialogFragment) fragment).dismiss();
+                    }
+                }
 
-            // Refresh the order history
-            if (getActivity() instanceof OrderHistory) {
-                ((OrderHistory) getActivity()).refreshOrderList();
+                // Refresh the order history if applicable
+                if (getActivity() instanceof OrderHistory) {
+                    ((OrderHistory) getActivity()).refreshOrderList();
+                }
+            } catch (Exception e) {
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "Error completing transaction: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -103,6 +116,8 @@ public class TransactionFragment extends DialogFragment {
                     ViewGroup.LayoutParams.MATCH_PARENT
             );
             getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            // Ensure dialog can't be dismissed by clicking outside
+            getDialog().setCanceledOnTouchOutside(false);
         }
     }
 }

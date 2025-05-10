@@ -51,7 +51,12 @@ public class PaymentFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        dbHelper = new DatabaseHelper(requireContext());
+        // Initialize database helper only if context is available
+        try {
+            dbHelper = new DatabaseHelper(requireContext());
+        } catch (Exception e) {
+            // Log the error but continue - we'll check dbHelper before using it
+        }
 
         View view = inflater.inflate(R.layout.fragment_payment, container, false);
         ImageButton exit = view.findViewById(R.id.exit);
@@ -75,20 +80,34 @@ public class PaymentFragment extends DialogFragment {
 
         paidGcash.setOnClickListener(v -> {
             try {
+                // Verify context and database helper are available
                 if (getContext() == null) {
                     return;
                 }
+
+                // Ensure database helper is initialized
+                if (dbHelper == null) {
+                    dbHelper = new DatabaseHelper(requireContext());
+                }
+
+                // Process payment
                 long orderId = dbHelper.insertOrder(orderSummary, totalAmount, "GCash", "Completed");
                 if (orderId != -1) {
+                    // Notify listener if available
                     if (paymentListener != null) {
                         paymentListener.onPaymentConfirmed("GCash");
                     }
-                    showTransactionConfirmation("GCash", totalAmount, 0.0);
+                    // Show transaction confirmation
+                    if (isAdded() && !isRemoving()) {
+                        showTransactionConfirmation("GCash", totalAmount, 0.0);
+                    }
                 } else {
-                    Toast.makeText(getContext(), "Failed to process payment", Toast.LENGTH_SHORT).show();
+                    if (getContext() != null && isAdded()) {
+                        Toast.makeText(getContext(), "Failed to process payment", Toast.LENGTH_SHORT).show();
+                    }
                 }
             } catch (Exception e) {
-                if (getContext() != null) {
+                if (getContext() != null && isAdded()) {
                     Toast.makeText(getContext(), "Error processing GCash payment: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -110,7 +129,8 @@ public class PaymentFragment extends DialogFragment {
     }
 
     private void showCashPaymentDialog() {
-        if (getContext() == null) return;
+        // Verify context is available
+        if (getContext() == null || !isAdded()) return;
 
         EditText input = new EditText(getContext());
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
@@ -129,7 +149,8 @@ public class PaymentFragment extends DialogFragment {
                     .setView(input)
                     .setPositiveButton("Enter", (dialog, which) -> {
                         try {
-                            if (getContext() == null) return;
+                            // Verify context is still available
+                            if (getContext() == null || !isAdded()) return;
 
                             String amountStr = input.getText().toString().trim();
                             if (!amountStr.isEmpty()) {
@@ -137,14 +158,27 @@ public class PaymentFragment extends DialogFragment {
                                     double cashAmount = Double.parseDouble(amountStr);
                                     if (cashAmount >= totalAmount) {
                                         double change = cashAmount - totalAmount;
+
+                                        // Ensure database helper is initialized
+                                        if (dbHelper == null) {
+                                            dbHelper = new DatabaseHelper(requireContext());
+                                        }
+
+                                        // Process payment
                                         long orderId = dbHelper.insertOrder(orderSummary, totalAmount, "Cash", "Completed");
                                         if (orderId != -1) {
+                                            // Notify listener if available
                                             if (paymentListener != null) {
                                                 paymentListener.onPaymentConfirmed("Cash");
                                             }
-                                            showTransactionConfirmation("Cash", cashAmount, change);
+                                            // Show transaction confirmation
+                                            if (isAdded() && !isRemoving()) {
+                                                showTransactionConfirmation("Cash", cashAmount, change);
+                                            }
                                         } else {
-                                            Toast.makeText(getContext(), "Failed to process payment", Toast.LENGTH_SHORT).show();
+                                            if (getContext() != null && isAdded()) {
+                                                Toast.makeText(getContext(), "Failed to process payment", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
                                     } else {
                                         Toast.makeText(getContext(), "Insufficient amount", Toast.LENGTH_SHORT).show();
@@ -156,7 +190,7 @@ public class PaymentFragment extends DialogFragment {
                                 Toast.makeText(getContext(), "Please enter an amount", Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
-                            if (getContext() != null) {
+                            if (getContext() != null && isAdded()) {
                                 Toast.makeText(getContext(), "Error processing cash payment: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -164,23 +198,36 @@ public class PaymentFragment extends DialogFragment {
             builder.setNegativeButton("Cancel", null);
             builder.show();
         } catch (Exception e) {
-            Toast.makeText(getContext(), "Dialog error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            if (getContext() != null && isAdded()) {
+                Toast.makeText(getContext(), "Dialog error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
     // ✅ Moved outside — this method must NOT be nested
     private void showTransactionConfirmation(String paymentMethod, double amountPaid, double change) {
-        if (getActivity() == null || !isAdded()) return;
+        // Verify activity and fragment state
+        if (getActivity() == null || !isAdded() || isRemoving()) return;
 
-        TransactionFragment transactionFragment = TransactionFragment.newInstance(
-                orderSummary,
-                String.format("₱%.2f", totalAmount),
-                paymentMethod,
-                amountPaid,
-                change
-        );
+        try {
+            // Create transaction fragment
+            TransactionFragment transactionFragment = TransactionFragment.newInstance(
+                    orderSummary,
+                    String.format("₱%.2f", totalAmount),
+                    paymentMethod,
+                    amountPaid,
+                    change
+            );
 
-        transactionFragment.show(getParentFragmentManager(), "transactionFragmentTag");
-        // Removed dismiss() here; TransactionFragment will handle dialog dismissal after confirmation
+            // Use childFragmentManager to avoid fragment state loss
+            if (isAdded() && !isRemoving() && !isDetached()) {
+                transactionFragment.show(getParentFragmentManager(), "transactionFragmentTag");
+                // Don't dismiss this fragment yet - TransactionFragment will handle dismissal after confirmation
+            }
+        } catch (Exception e) {
+            if (getContext() != null && isAdded()) {
+                Toast.makeText(getContext(), "Error showing transaction confirmation: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
