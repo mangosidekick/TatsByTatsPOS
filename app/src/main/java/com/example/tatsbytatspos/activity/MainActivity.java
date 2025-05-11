@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private Button confirmButton;
     private Button resetButton;
+    private androidx.appcompat.widget.SearchView searchView;
     Database db;
 
     private FrameLayout fragmentLayout;
@@ -59,6 +60,38 @@ public class MainActivity extends AppCompatActivity {
         resetButton = findViewById(R.id.reset_button);
         recyclerView = findViewById(R.id.menuRecyclerView);
         fragmentLayout = findViewById(R.id.fragmentLayout);
+        searchView = findViewById(R.id.searchView);
+
+        // Set up search functionality
+        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (productAdapter != null) {
+                    productAdapter.filter(newText);
+                }
+                return true;
+            }
+        });
+        searchView = findViewById(R.id.searchView);
+
+        // Set up search functionality
+        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                productAdapter.filter(newText);
+                return true;
+            }
+        });
 
         db = new Database(this);
         productList = new ArrayList<>();

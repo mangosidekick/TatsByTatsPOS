@@ -84,7 +84,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     // Insert a product
-    public boolean insertProduct(String name, double price, int quantity, byte[] image) {
+    public boolean insertProduct(String name, double price, int quantity, byte[] image, boolean isHidden) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, name);

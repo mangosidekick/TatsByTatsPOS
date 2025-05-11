@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -158,6 +159,10 @@ public class Inventory extends AppCompatActivity {
         EditText editQuantity = dialogView.findViewById(R.id.editQuantity);
         imagePreviewRef = dialogView.findViewById(R.id.imagePreview); // Set reference
         Button btnPickImage = dialogView.findViewById(R.id.btnPickImage);
+        ToggleButton toggleShow = dialogView.findViewById(R.id.toggleShow);
+
+        // Set initial state for new products (visible by default)
+        toggleShow.setChecked(true); // true means visible (not hidden)
 
         btnPickImage.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -175,13 +180,12 @@ public class Inventory extends AppCompatActivity {
                     int quantity = Integer.parseInt(quantityStr);
                     byte[] imageBytes = getBytesFromBitmap(selectedImage);
 
-                    boolean success = db.insertProduct(name, price, quantity, imageBytes);
+                    // Get visibility state from toggle button
+                    boolean isVisible = toggleShow.isChecked();
+                    boolean isHidden = !isVisible; // Convert to hidden state (inverse of visible)
 
-                    if (success) {
-                        Toast.makeText(this, "Product added", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, "Insert failed", Toast.LENGTH_SHORT).show();
-                    }
+                    // Insert product with visibility state
+                    boolean success = db.insertProduct(name, price, quantity, imageBytes, isHidden);
 
                     if (success) {
                         Toast.makeText(this, "Product added", Toast.LENGTH_SHORT).show();
@@ -255,6 +259,19 @@ public class Inventory extends AppCompatActivity {
         EditText editQuantity = dialogView.findViewById(R.id.editQuantity);
         imagePreviewRef = dialogView.findViewById(R.id.imagePreview);
         Button btnPickImage = dialogView.findViewById(R.id.btnPickImage);
+        ToggleButton toggleShow = dialogView.findViewById(R.id.toggleShow);
+
+        // Set initial state based on product visibility
+        toggleShow.setChecked(!product.isHidden());
+
+        // Add listener for visibility toggle
+        toggleShow.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            product.setHidden(!isChecked);
+            Toast.makeText(this,
+                    !isChecked ? product.getName() + " hidden from main menu" :
+                            product.getName() + " visible in main menu",
+                    Toast.LENGTH_SHORT).show();
+        });
 
         // Pre-fill values
         editName.setText(product.getName());
@@ -284,10 +301,16 @@ public class Inventory extends AppCompatActivity {
 
                     double price = Double.parseDouble(priceStr);
                     int quantity = Integer.parseInt(quantityStr);
-                    byte[] imageBytes = getBytesFromBitmap(selectedImage);
 
-                    // Update product with all fields including image
-                    boolean success = db.updateProduct(product.getId(), name, price, quantity, imageBytes, product.isHidden());
+                    boolean success;
+                    if (selectedImage != null) {
+                        byte[] imageBytes = getBytesFromBitmap(selectedImage);
+                        success = db.updateProduct(product.getId(), name, price, quantity, imageBytes, product.isHidden());
+                    } else {
+                        // Use the overloaded method without image parameter
+                        success = db.updateProduct(product.getId(), name, price, quantity, product.isHidden());
+                    }
+
                     if (success) {
                         Toast.makeText(this, "Product updated", Toast.LENGTH_SHORT).show();
                         loadProductsFromDatabase();

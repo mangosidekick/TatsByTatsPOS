@@ -88,15 +88,26 @@
 
         <ImageButton
             android:src="@drawable/baseline_star_24"
-            android:contentDescription="@string/minus"
+            android:contentDescription="@string/visibility_indicator"
             android:id="@+id/star"
-            android:layout_width="48sp"
-            android:layout_height="48sp"
+            android:layout_width="24sp"
+            android:layout_height="24sp"
             android:layout_gravity="center"
             android:background="@android:color/transparent"
-            android:layout_marginEnd="10sp"
+            android:layout_marginEnd="5sp"
             app:tint="@color/orange"
             android:visibility="gone"
+            />
+
+        <Button
+            android:id="@+id/btn_visibility"
+            android:layout_width="wrap_content"
+            android:layout_height="40sp"
+            android:layout_gravity="center"
+            android:text="Show on Menu"
+            android:textSize="12sp"
+            android:visibility="gone"
+            android:backgroundTint="@color/orange"
             />
 
         <EditText
