@@ -28,6 +28,14 @@ public class OrderDatabase extends SQLiteOpenHelper {
 
     public OrderDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            if (db != null) {
+                db.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

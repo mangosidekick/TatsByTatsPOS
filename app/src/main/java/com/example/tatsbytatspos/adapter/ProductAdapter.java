@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,11 +28,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         void onProductClick(Product product);
     }
 
+    public interface OnStarClickListener {
+        void onStarClick(Product product, int position);
+    }
+
     private List<Product> productList;
     private boolean showStar;
     private boolean invQuantity;
     private Context context;
     private OnProductClickListener listener;
+    private OnStarClickListener starListener;
 
     public ProductAdapter(Context context, List<Product> productList, boolean showStar, boolean invQuantity, OnProductClickListener listener) {
         this.context = context;
@@ -39,6 +45,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         this.showStar = showStar;
         this.invQuantity = invQuantity;
         this.listener = listener;
+    }
+
+    public ProductAdapter(Context context, List<Product> productList, boolean showStar, boolean invQuantity, OnProductClickListener listener, OnStarClickListener starListener) {
+        this.context = context;
+        this.productList = (productList != null) ? productList : new ArrayList<>();
+        this.showStar = showStar;
+        this.invQuantity = invQuantity;
+        this.listener = listener;
+        this.starListener = starListener;
     }
 
     @NonNull
@@ -58,6 +73,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             holder.star.setVisibility(View.VISIBLE);
             holder.btnPlus.setVisibility(View.INVISIBLE);
             holder.btnMinus.setVisibility(View.INVISIBLE);
+
+            // Set star color based on product visibility
+            if (currentProduct.isHidden()) {
+                holder.star.setColorFilter(android.graphics.Color.GRAY);
+            } else {
+                holder.star.setColorFilter(null); // Reset to default color
+            }
+
+            // Set click listener for star
+            holder.star.setOnClickListener(v -> {
+                if (starListener != null) {
+                    starListener.onStarClick(currentProduct, position);
+                }
+            });
         } else {
             holder.star.setVisibility(View.GONE);
             holder.btnPlus.setVisibility(View.VISIBLE);
@@ -91,9 +120,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.productQuantity.setText(String.valueOf(currentProduct.getOrderQuantity()));
 
         holder.btnPlus.setOnClickListener(v -> {
-            int quantity = currentProduct.getOrderQuantity() + 1;
-            currentProduct.setOrderQuantity(quantity);
-            notifyItemChanged(position);
+            // Check if there's enough inventory before incrementing
+            if (currentProduct.getOrderQuantity() < currentProduct.getQuantity()) {
+                int quantity = currentProduct.getOrderQuantity() + 1;
+                currentProduct.setOrderQuantity(quantity);
+                notifyItemChanged(position);
+            } else {
+                Toast.makeText(context, "Out of stock!", Toast.LENGTH_SHORT).show();
+            }
         });
         holder.btnMinus.setOnClickListener(v -> {
             int quantity = currentProduct.getOrderQuantity();

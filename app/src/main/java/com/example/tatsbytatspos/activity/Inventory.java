@@ -108,7 +108,22 @@ public class Inventory extends AppCompatActivity {
         productList = new ArrayList<>();
         productAdapter = new ProductAdapter(this, productList, showStarButton, showInventoryQuantity, product -> {
             showEditProductDialog(product);
+        }, (product, position) -> {
+            // Toggle product visibility
+            boolean newVisibility = !product.isHidden();
+            product.setHidden(newVisibility);
 
+            // Update database
+            db.toggleProductVisibility(product.getId(), newVisibility);
+
+            // Update UI
+            productAdapter.notifyItemChanged(position);
+
+            // Show feedback
+            String message = newVisibility ?
+                    product.getName() + " hidden from main menu" :
+                    product.getName() + " visible in main menu";
+            Toast.makeText(Inventory.this, message, Toast.LENGTH_SHORT).show();
         });
         recyclerView.setAdapter(productAdapter);
 
@@ -214,7 +229,16 @@ public class Inventory extends AppCompatActivity {
                 int quantity = cursor.getInt(cursor.getColumnIndexOrThrow("quantity"));
                 byte[] image = cursor.getBlob(cursor.getColumnIndexOrThrow("image"));
 
-                productList.add(new Product(id, name, price, quantity, image));
+                // Check if hidden column exists in the cursor
+                boolean hidden = false;
+                try {
+                    int hiddenColumnIndex = cursor.getColumnIndexOrThrow("hidden");
+                    hidden = cursor.getInt(hiddenColumnIndex) == 1;
+                } catch (IllegalArgumentException e) {
+                    // Column doesn't exist yet, use default value (false)
+                }
+
+                productList.add(new Product(id, name, price, quantity, image, hidden));
             } while (cursor.moveToNext());
             cursor.close();
         }
@@ -262,7 +286,8 @@ public class Inventory extends AppCompatActivity {
                     int quantity = Integer.parseInt(quantityStr);
                     byte[] imageBytes = getBytesFromBitmap(selectedImage);
 
-                    boolean success = db.updateProduct(product.getId(), name, price, quantity, imageBytes);
+                    // Update product with all fields including image
+                    boolean success = db.updateProduct(product.getId(), name, price, quantity, imageBytes, product.isHidden());
                     if (success) {
                         Toast.makeText(this, "Product updated", Toast.LENGTH_SHORT).show();
                         loadProductsFromDatabase();

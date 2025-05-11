@@ -102,7 +102,8 @@ public class Cart {
                             product.getName(),
                             product.getPrice(),
                             newQuantity,
-                            product.getImage()
+                            product.getImage(),
+                            product.isHidden()
                     );
                 }
             }

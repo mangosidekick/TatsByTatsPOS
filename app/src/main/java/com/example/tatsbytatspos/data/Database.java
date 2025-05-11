@@ -20,6 +20,7 @@ public class Database extends SQLiteOpenHelper {
     public static final String COLUMN_PRICE = "price";
     public static final String COLUMN_QUANTITY = "quantity";
     public static final String COLUMN_IMAGE = "image";
+    public static final String COLUMN_HIDDEN = "hidden";
 
     // Orders table
     public static final String ORDER_TABLE_NAME = "orders";
@@ -36,6 +37,14 @@ public class Database extends SQLiteOpenHelper {
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            if (db != null) {
+                db.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -45,7 +54,8 @@ public class Database extends SQLiteOpenHelper {
                 COLUMN_NAME + " TEXT NOT NULL, " +
                 COLUMN_PRICE + " REAL NOT NULL, " +
                 COLUMN_QUANTITY + " INTEGER NOT NULL, " +
-                COLUMN_IMAGE + " BLOB)";
+                COLUMN_IMAGE + " BLOB, " +
+                COLUMN_HIDDEN + " INTEGER DEFAULT 0)";
 
         // Orders table
         String createOrdersTableSQL = "CREATE TABLE " + ORDER_TABLE_NAME + " (" +
@@ -81,6 +91,7 @@ public class Database extends SQLiteOpenHelper {
         values.put(COLUMN_PRICE, price);
         values.put(COLUMN_QUANTITY, quantity);
         values.put(COLUMN_IMAGE, image);
+        values.put(COLUMN_HIDDEN, 0); // Not hidden by default
         long result = db.insert(TABLE_NAME, null, values);
         return result != -1;
     }
@@ -145,14 +156,51 @@ public class Database extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
     }
 
+    // Get visible products (not hidden)
+    public Cursor getVisibleProducts() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_HIDDEN + "=0", null);
+    }
+
     // Update product by ID
-    public boolean updateProduct(int id, String name, double price, int quantity, byte[] image) {
+    public boolean updateProduct(int id, String name, double price, int quantity, byte[] image, boolean hidden) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("name", name);
         values.put("price", price);
         values.put("quantity", quantity);
         values.put("image", image);
+        values.put("hidden", hidden ? 1 : 0);
+        int rows = db.update("products", values, "id=?", new String[]{String.valueOf(id)});
+        return rows > 0;
+    }
+
+    // Update product by ID (without changing image)
+    public boolean updateProduct(int id, String name, double price, int quantity, boolean hidden) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("price", price);
+        values.put("quantity", quantity);
+        values.put("hidden", hidden ? 1 : 0);
+        int rows = db.update("products", values, "id=?", new String[]{String.valueOf(id)});
+        return rows > 0;
+    }
+
+    // Toggle product visibility
+    public boolean toggleProductVisibility(int id, boolean hidden) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("hidden", hidden ? 1 : 0);
+        int rows = db.update("products", values, "id=?", new String[]{String.valueOf(id)});
+        return rows > 0;
+    }
+
+    // Update product quantity
+    public boolean updateProductQuantity(int id, int newQuantity) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("quantity", newQuantity);
         int rows = db.update("products", values, "id=?", new String[]{String.valueOf(id)});
         return rows > 0;
     }

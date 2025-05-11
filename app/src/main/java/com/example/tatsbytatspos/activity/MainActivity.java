@@ -108,7 +108,8 @@ public class MainActivity extends AppCompatActivity {
             productList.clear();
         }
 
-        Cursor cursor = db.getAllProducts();
+        // Use getVisibleProducts to only show products that aren't hidden
+        Cursor cursor = db.getVisibleProducts();
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
@@ -117,7 +118,13 @@ public class MainActivity extends AppCompatActivity {
                 int quantity = cursor.getInt(cursor.getColumnIndexOrThrow("quantity"));
                 byte[] image = cursor.getBlob(cursor.getColumnIndexOrThrow("image"));
 
-                productList.add(new Product(id, name, price, quantity, image));
+                // Check if product is out of stock
+                if (quantity <= 0) {
+                    Toast.makeText(this, name + " is out of stock!", Toast.LENGTH_SHORT).show();
+                }
+
+                Product product = new Product(id, name, price, quantity, image);
+                productList.add(product);
 
             } while (cursor.moveToNext());
             cursor.close();
@@ -126,13 +133,26 @@ public class MainActivity extends AppCompatActivity {
 
         //confirm button action
         confirmButton.setOnClickListener(v -> {
-            // Check if any products are selected
+            // Check if any products are selected and validate stock
             boolean hasSelectedProducts = false;
+            boolean hasOutOfStockItems = false;
+
             for (Product product : productAdapter.getProductList()) {
                 if (product.getOrderQuantity() > 0) {
                     hasSelectedProducts = true;
-                    break;
+
+                    // Check if there's enough inventory
+                    if (product.getOrderQuantity() > product.getQuantity()) {
+                        Toast.makeText(MainActivity.this, product.getName() + " is out of stock! Only " +
+                                product.getQuantity() + " available.", Toast.LENGTH_SHORT).show();
+                        hasOutOfStockItems = true;
+                    }
                 }
+            }
+
+            // Don't proceed if there are out-of-stock items
+            if (hasOutOfStockItems) {
+                return;
             }
 
             if (!hasSelectedProducts) {

@@ -7,6 +7,7 @@ public class Product {
     private int quantity;
     private int orderquantity;
     private byte[] image;
+    private boolean hidden;
 
     public Product(int id, String name, double price, int quantity, byte[] image) {
         this.id = id;
@@ -14,6 +15,16 @@ public class Product {
         this.price = price;
         this.quantity = quantity;
         this.image = image;
+        this.hidden = false;
+    }
+
+    public Product(int id, String name, double price, int quantity, byte[] image, boolean hidden) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+        this.image = image;
+        this.hidden = hidden;
     }
 
     public void setId(int id) {
@@ -42,6 +53,14 @@ public class Product {
 
     public int getOrderQuantity() {
         return orderquantity;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+
+    public boolean isHidden() {
+        return hidden;
     }
 
     // Getters
