@@ -43,10 +43,7 @@
                 android:fontFamily="@font/abel"
                 android:padding="5dp"
                 app:queryHint="@string/product_hint"
-                android:textColor="@color/black"
-                android:textColorHint="@color/dark_grey"
-                android:iconifiedByDefault="false"
-                app:queryBackground="@android:color/transparent" />
+                app:searchViewStyle="@style/SearchViewStyle" />
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.recyclerview.widget.RecyclerView
