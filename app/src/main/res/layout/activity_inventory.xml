@@ -20,33 +20,39 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:background="@color/white">
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            android:theme="@style/MyDialogTheme"
+            android:elevation="4dp">
 
-            <ImageButton
-                android:id="@+id/sideBarButton"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="10dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/app_name"
-                app:srcCompat="@drawable/baseline_menu_24"
-                app:tint="@color/black" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-            <EditText
-                android:id="@+id/searchProducts"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:layout_gravity="end"
-                android:layout_marginEnd="30dp"
-                android:background="@drawable/round_edittext"
-                android:fontFamily="@font/abel"
-                android:hint="@string/product_hint"
-                android:inputType="text"
-                android:padding="15dp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/dark_grey"
-                android:textSize="15sp" />
+                <ImageButton
+                    android:id="@+id/sideBarButton"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/app_name"
+                    app:srcCompat="@drawable/baseline_menu_24"
+                    app:tint="@color/black" />
+
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/searchView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/round_edittext"
+                    android:fontFamily="@font/abel"
+                    android:textSize="15sp"
+                    app:queryHint="@string/product_hint"
+                    app:iconifiedByDefault="false" />
+            </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout

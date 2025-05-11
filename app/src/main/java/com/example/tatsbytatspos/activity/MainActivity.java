@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         searchView = findViewById(R.id.searchView);
 
         // Set up search functionality
-        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -121,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Set up RecyclerView
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2); // 2 columns
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 5); // 2 columns
         recyclerView.setLayoutManager(gridLayoutManager);
 
         boolean showStarButton = false;

@@ -14,9 +14,10 @@
         <item name="colorPrimary">@color/black</item> <!-- Your desired color -->
         <item name="colorOnPrimary">@color/black</item>
         <item name="titleTextColor">@color/black</item>
-        <item name="android:textColorPrimary">@color/orange</item>
+        <item name="android:textColorPrimary">@color/black</item>
         <item name="fontFamily">@font/abel</item>
         <item name="background">@drawable/round_rectangle</item>
+
 
         <!-- Button styles -->
         <item name="buttonBarPositiveButtonStyle">@style/MyPositiveButton</item>
