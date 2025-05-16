@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tatsbytatspos.data.Database;
 import com.example.tatsbytatspos.fragment.PaymentFragment;
-import com.example.tatsbytatspos.fragment.TransactionFragment;
 import com.example.tatsbytatspos.model.Product;
 import com.example.tatsbytatspos.adapter.ProductAdapter;
 import com.example.tatsbytatspos.R;
@@ -115,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.nav_inventory) {
                 startActivity(new Intent(MainActivity.this, Inventory.class));
                 //Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_file_maintenance) {
+                startActivity(new Intent(MainActivity.this, FileMaintenance.class));
             }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;

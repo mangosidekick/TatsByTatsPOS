@@ -16,6 +16,9 @@
             android:name=".activity.Inventory"
             android:exported="false" />
         <activity
+            android:name=".activity.FileMaintenance"
+            android:exported="false" />
+        <activity
             android:name=".activity.OrderHistory"
             android:exported="false" />
         <activity

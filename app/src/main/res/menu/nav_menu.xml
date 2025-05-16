@@ -19,6 +19,10 @@
             android:id="@+id/nav_inventory"
             android:title="@string/inventory"
             />
+        <item
+            android:id="@+id/nav_file_maintenance"
+            android:title="File Maintenance"
+            />
     </group>
 
 </menu>

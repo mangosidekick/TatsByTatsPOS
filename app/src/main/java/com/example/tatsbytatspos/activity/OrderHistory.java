@@ -117,6 +117,10 @@ public class OrderHistory extends AppCompatActivity {
                     Toast.makeText(OrderHistory.this, "Already on this screen!", Toast.LENGTH_SHORT).show();
                 } else if (id == R.id.nav_inventory) {
                     startActivity(new Intent(OrderHistory.this, Inventory.class));
+                    //Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
+                } else if (id == R.id.nav_file_maintenance) {
+                    startActivity(new Intent(OrderHistory.this, FileMaintenance.class));
+                    //Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);
             } catch (Exception e) {
