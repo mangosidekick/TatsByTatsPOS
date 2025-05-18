@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="Account Settings"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="edit_profile"
+            android:title="Edit Profile"
+            android:summary="Change your username"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="change_password"
+            android:title="Change Password"
+            android:summary="Update your password"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Other"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="logout"
+            android:title="Logout"
+            android:summary="Sign out of your account"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
