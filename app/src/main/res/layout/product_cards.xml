@@ -87,7 +87,8 @@
             />
 
         <ImageButton
-            android:src="@drawable/baseline_star_24"
+            android:src="@drawable/baseline_wb_twighlight_24"
+            android:layout_margin="5dp"
             android:contentDescription="@string/visibility_indicator"
             android:id="@+id/star"
             android:layout_width="24sp"
