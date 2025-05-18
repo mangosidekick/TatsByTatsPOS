@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -23,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class OrderHistory extends AppCompatActivity {
+public class OrderHistory extends BaseActivity {
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
     private ImageButton sideBarButton;
@@ -34,6 +33,12 @@ public class OrderHistory extends AppCompatActivity {
     private NavigationView navigationView;
     private DatabaseHelper dbHelper;
     private SearchView searchView;
+
+    @Override
+    protected boolean hasAccess() {
+        // Both managers and cashiers can access order history
+        return isManager() || isCashier();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,10 +122,10 @@ public class OrderHistory extends AppCompatActivity {
                     Toast.makeText(OrderHistory.this, "Already on this screen!", Toast.LENGTH_SHORT).show();
                 } else if (id == R.id.nav_inventory) {
                     startActivity(new Intent(OrderHistory.this, Inventory.class));
-                    //Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
-                } else if (id == R.id.nav_file_maintenance) {
-                    startActivity(new Intent(OrderHistory.this, FileMaintenance.class));
-                    //Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
+                } else if (id == R.id.nav_settings) {
+                    startActivity(new Intent(OrderHistory.this, SettingsActivity.class));
+                } else if (id == R.id.nav_user_management && isManager()) {
+                    startActivity(new Intent(OrderHistory.this, UserManagementActivity.class));
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);
             } catch (Exception e) {

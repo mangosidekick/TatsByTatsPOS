@@ -1,37 +1,57 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp"
     android:orientation="vertical">
 
-    <EditText
-        android:fontFamily="@font/abel"
-        android:id="@+id/editName"
-        android:textColorHint="@color/orange"
-        android:hint="Product Name"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:textColor="@color/black"
-        android:layout_height="60sp" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-    <EditText
-        android:fontFamily="@font/abel"
-        android:id="@+id/editPrice"
-        android:hint="Price"
-        android:textColorHint="@color/orange"
-        android:inputType="numberDecimal"
-        android:layout_width="match_parent"
-        android:textColor="@color/black"
-        android:layout_height="60sp" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Product Name"
+            android:fontFamily="@font/abel"
+            android:textColor="@color/black"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:fontFamily="@font/abel"
-        android:id="@+id/editQuantity"
-        android:hint="Quantity"
-        android:textColorHint="@color/orange"
-        android:inputType="number"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:textColor="@color/black"
-        android:layout_height="60sp" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Price"
+            android:fontFamily="@font/abel"
+            android:textColor="@color/black"
+            android:inputType="numberDecimal" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editQuantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Quantity"
+            android:fontFamily="@font/abel"
+            android:textColor="@color/black"
+            android:inputType="number" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <ImageView
         android:id="@+id/imagePreview"

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.tatsbytatspos.model.Orders;
+import com.example.tatsbytatspos.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +16,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "TatsByTatsPOS.db";
     private static final int DATABASE_VERSION = 1;
 
-    // Table name
+    // Table names
     private static final String TABLE_ORDERS = "orders";
+    private static final String TABLE_USERS = "users";
+
+    // User table columns
+    private static final String COLUMN_USER_ID = "id";
+    private static final String COLUMN_USERNAME = "username";
+    private static final String COLUMN_PASSWORD = "password";
+    private static final String COLUMN_ROLE = "role";
 
     // Column names
     private static final String COLUMN_ID = "id";
@@ -40,9 +48,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    // Create users table SQL query
+    private static final String CREATE_TABLE_USERS = "CREATE TABLE " + TABLE_USERS + "("
+            + COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + COLUMN_USERNAME + " TEXT UNIQUE NOT NULL,"
+            + COLUMN_PASSWORD + " TEXT NOT NULL,"
+            + COLUMN_ROLE + " TEXT NOT NULL"
+            + ")";
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_ORDERS);
+        db.execSQL(CREATE_TABLE_USERS);
+
+        // Insert default manager account
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_USERNAME, "admin");
+        values.put(COLUMN_PASSWORD, "admin123"); // In production, use proper password hashing
+        values.put(COLUMN_ROLE, "MANAGER");
+        db.insert(TABLE_USERS, null, values);
     }
 
     @Override
@@ -54,6 +78,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             // If no specific migration path, fall back to recreating the database
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
             onCreate(db);
         } catch (Exception e) {
             e.printStackTrace();
@@ -202,7 +227,62 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 db.close();
             }
         }
-
         return success;
+    }
+
+    public User authenticateUser(String username, String password) {
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        User user = null;
+
+        try {
+            db = this.getReadableDatabase();
+            String[] columns = {COLUMN_USER_ID, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_ROLE};
+            String selection = COLUMN_USERNAME + "=? AND " + COLUMN_PASSWORD + "=?";
+            String[] selectionArgs = {username, password};
+
+            cursor = db.query(TABLE_USERS, columns, selection, selectionArgs, null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                user = new User(
+                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USERNAME)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PASSWORD)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ROLE))
+                );
+                user.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_ID)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
+        }
+        return user;
+    }
+
+    public long createUser(String username, String password, String role) {
+        SQLiteDatabase db = null;
+        long userId = -1;
+
+        try {
+            db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_USERNAME, username);
+            values.put(COLUMN_PASSWORD, password);
+            values.put(COLUMN_ROLE, role);
+
+            userId = db.insert(TABLE_USERS, null, values);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
+        }
+        return userId;
     }
 }

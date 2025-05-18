@@ -21,7 +21,6 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:theme="@style/MyDialogTheme"
             android:background="@color/white"
             android:elevation="4dp">
 
@@ -48,6 +47,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:background="@drawable/round_edittext"
+                    android:queryHint="Search orders..."
                     android:fontFamily="@font/abel"
                     android:textSize="15sp"
                     app:queryHint="@string/orders_hint"
@@ -62,7 +62,7 @@
             android:layout_weight="1"
             android:padding="5dp"
             android:layout_gravity="center_horizontal"
-            android:contentDescription="@string/appbar_scrolling_view_behavior" />
+            android:contentDescription="List of order history entries" />
     </LinearLayout>
 
     <!-- NAVIGATION DRAWER SECOND -->

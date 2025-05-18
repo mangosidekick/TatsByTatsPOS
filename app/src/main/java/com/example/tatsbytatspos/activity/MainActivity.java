@@ -12,7 +12,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -24,6 +23,9 @@ import com.example.tatsbytatspos.fragment.PaymentFragment;
 import com.example.tatsbytatspos.model.Product;
 import com.example.tatsbytatspos.adapter.ProductAdapter;
 import com.example.tatsbytatspos.R;
+import com.example.tatsbytatspos.utils.SessionManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private Button confirmButton;
     private Button resetButton;
-    private androidx.appcompat.widget.SearchView searchView;
+    private SessionManager sessionManager;
     Database db;
 
     private FrameLayout fragmentLayout;
@@ -60,41 +62,13 @@ public class MainActivity extends AppCompatActivity {
         resetButton = findViewById(R.id.reset_button);
         recyclerView = findViewById(R.id.menuRecyclerView);
         fragmentLayout = findViewById(R.id.fragmentLayout);
-        searchView = findViewById(R.id.searchView);
-
-        // Set up search functionality
-        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (productAdapter != null) {
-                    productAdapter.filter(newText);
-                }
-                return true;
-            }
-        });
-        searchView = findViewById(R.id.searchView);
-
-        // Set up search functionality
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                productAdapter.filter(newText);
-                return true;
-            }
-        });
 
         db = new Database(this);
+        sessionManager = new SessionManager(this);
         productList = new ArrayList<>();
+
+        // Configure navigation based on user role
+        configureNavigationForUserRole();
 
         // Set up the Toolbar
         setSupportActionBar(toolbar);
@@ -110,12 +84,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Already on this screen!", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_history) {
                 startActivity(new Intent(MainActivity.this, OrderHistory.class));
-                //Toast.makeText(MainActivity.this, "History clicked", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_inventory) {
                 startActivity(new Intent(MainActivity.this, Inventory.class));
-                //Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.nav_file_maintenance) {
-                startActivity(new Intent(MainActivity.this, FileMaintenance.class));
+            } else if (id == R.id.nav_settings) {
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+            } else if (id == R.id.nav_user_management && sessionManager.isAdmin()) {
+                startActivity(new Intent(MainActivity.this, UserManagementActivity.class));
             }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
@@ -123,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Set up RecyclerView
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 5); // 2 columns
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2); // 2 columns
         recyclerView.setLayoutManager(gridLayoutManager);
 
         boolean showStarButton = false;
@@ -136,6 +110,40 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void configureNavigationForUserRole() {
+        Menu navMenu = navigationView.getMenu();
+
+        // Configure navigation based on user role
+        if (sessionManager.isCashier()) {
+            // Cashiers can only access home and order history
+            hideMenuItem(navMenu, R.id.nav_inventory);
+            hideMenuItem(navMenu, R.id.nav_settings);
+            hideMenuItem(navMenu, R.id.nav_user_management);
+
+            // Update toolbar title to indicate cashier mode
+            toolbar.setTitle("POS System (Cashier Mode)");
+        } else if (sessionManager.isManager()) {
+            // Managers can access everything except user management
+            hideMenuItem(navMenu, R.id.nav_user_management);
+            toolbar.setTitle("POS System (Manager Mode)");
+        } else if (sessionManager.isAdmin()) {
+            // Admins have full access
+            toolbar.setTitle("POS System (Admin Mode)");
+        } else {
+            // Default case - restrict access
+            hideMenuItem(navMenu, R.id.nav_inventory);
+            hideMenuItem(navMenu, R.id.nav_settings);
+            hideMenuItem(navMenu, R.id.nav_user_management);
+        }
+    }
+
+    private void hideMenuItem(Menu menu, int itemId) {
+        MenuItem item = menu.findItem(itemId);
+        if (item != null) {
+            item.setVisible(false);
+        }
+    }
+
     private void loadProductsFromDatabase() {
         if (productList == null) {
             productList = new ArrayList<>();
@@ -143,8 +151,7 @@ public class MainActivity extends AppCompatActivity {
             productList.clear();
         }
 
-        // Use getVisibleProducts to only show products that aren't hidden
-        Cursor cursor = db.getVisibleProducts();
+        Cursor cursor = db.getAllProducts();
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
@@ -153,13 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 int quantity = cursor.getInt(cursor.getColumnIndexOrThrow("quantity"));
                 byte[] image = cursor.getBlob(cursor.getColumnIndexOrThrow("image"));
 
-                // Check if product is out of stock
-                if (quantity <= 0) {
-                    Toast.makeText(this, name + " is out of stock!", Toast.LENGTH_SHORT).show();
-                }
-
-                Product product = new Product(id, name, price, quantity, image);
-                productList.add(product);
+                productList.add(new Product(id, name, price, quantity, image));
 
             } while (cursor.moveToNext());
             cursor.close();
@@ -168,26 +169,13 @@ public class MainActivity extends AppCompatActivity {
 
         //confirm button action
         confirmButton.setOnClickListener(v -> {
-            // Check if any products are selected and validate stock
+            // Check if any products are selected
             boolean hasSelectedProducts = false;
-            boolean hasOutOfStockItems = false;
-
             for (Product product : productAdapter.getProductList()) {
                 if (product.getOrderQuantity() > 0) {
                     hasSelectedProducts = true;
-
-                    // Check if there's enough inventory
-                    if (product.getOrderQuantity() > product.getQuantity()) {
-                        Toast.makeText(MainActivity.this, product.getName() + " is out of stock! Only " +
-                                product.getQuantity() + " available.", Toast.LENGTH_SHORT).show();
-                        hasOutOfStockItems = true;
-                    }
+                    break;
                 }
-            }
-
-            // Don't proceed if there are out-of-stock items
-            if (hasOutOfStockItems) {
-                return;
             }
 
             if (!hasSelectedProducts) {
