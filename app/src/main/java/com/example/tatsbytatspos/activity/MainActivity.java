@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tatsbytatspos.data.Database;
+import com.example.tatsbytatspos.database.DatabaseHelper;
 import com.example.tatsbytatspos.fragment.PaymentFragment;
 import com.example.tatsbytatspos.model.Product;
 import com.example.tatsbytatspos.adapter.ProductAdapter;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private Button resetButton;
     private SessionManager sessionManager;
     Database db;
+    private DatabaseHelper dbHelper;
 
     private FrameLayout fragmentLayout;
 
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentLayout = findViewById(R.id.fragmentLayout);
 
         db = new Database(this);
+        dbHelper = new DatabaseHelper(this);
         sessionManager = new SessionManager(this);
         productList = new ArrayList<>();
 
@@ -81,13 +84,21 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_home) {
-                Toast.makeText(MainActivity.this, "Already on this screen!", Toast.LENGTH_SHORT).show();
+                if (sessionManager.isCashier()) {
+                    startActivity(new Intent(MainActivity.this, CreateOrderActivity.class));
+                } else {
+                    Toast.makeText(MainActivity.this, "Already on this screen!", Toast.LENGTH_SHORT).show();
+                }
             } else if (id == R.id.nav_history) {
                 startActivity(new Intent(MainActivity.this, OrderHistory.class));
             } else if (id == R.id.nav_inventory) {
-                startActivity(new Intent(MainActivity.this, Inventory.class));
+                if (sessionManager.isAdmin() || sessionManager.isManager()) {
+                    startActivity(new Intent(MainActivity.this, Inventory.class));
+                }
             } else if (id == R.id.nav_settings) {
-                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                if (sessionManager.isAdmin() || sessionManager.isManager()) {
+                    startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                }
             } else if (id == R.id.nav_user_management && sessionManager.isAdmin()) {
                 startActivity(new Intent(MainActivity.this, UserManagementActivity.class));
             }
@@ -110,8 +121,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected boolean hasAccess() {
+        return true; // All roles can access main activity
+    }
+
     private void configureNavigationForUserRole() {
         Menu navMenu = navigationView.getMenu();
+
+        // First, make all menu items visible
+        showAllMenuItems(navMenu);
 
         // Configure navigation based on user role
         if (sessionManager.isCashier()) {
@@ -141,6 +160,15 @@ public class MainActivity extends AppCompatActivity {
         MenuItem item = menu.findItem(itemId);
         if (item != null) {
             item.setVisible(false);
+        }
+    }
+
+    private void showAllMenuItems(Menu menu) {
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            if (item != null) {
+                item.setVisible(true);
+            }
         }
     }
 
@@ -233,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
                 String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
 
                 // Insert the order with the confirmed payment method
-                boolean success = db.insertOrderWithItems(productIds, quantities, currentDateTime, paymentMethod);
+                boolean success = dbHelper.insertOrderWithItems(productIds, quantities, currentDateTime, paymentMethod);
 
                 if (success) {
                     Toast.makeText(MainActivity.this, "Order completed successfully!", Toast.LENGTH_SHORT).show();

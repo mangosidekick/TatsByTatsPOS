@@ -39,7 +39,7 @@ public class SessionManager {
 
     public boolean isManager() {
         String role = pref.getString(KEY_ROLE, "");
-        return "MANAGER".equalsIgnoreCase(role);
+        return "MANAGER".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role);
     }
 
     public boolean isAdmin() {

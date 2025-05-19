@@ -78,10 +78,10 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Query the database for user authentication
+        // First verify if user exists with given credentials
         String[] columns = {Database.COLUMN_USER_ID, Database.COLUMN_USERNAME, Database.COLUMN_USER_ROLE};
-        String selection = Database.COLUMN_USERNAME + "=? AND " + Database.COLUMN_PASSWORD + "=? AND " + Database.COLUMN_USER_ROLE + "=?";
-        String[] selectionArgs = {username, password, selectedRole};
+        String selection = Database.COLUMN_USERNAME + "=? AND " + Database.COLUMN_PASSWORD + "=?";
+        String[] selectionArgs = {username, password};
 
         android.database.Cursor cursor = database.getReadableDatabase().query(
                 Database.USERS_TABLE_NAME,
@@ -104,10 +104,17 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             int userId = cursor.getInt(userIdIndex);
-            String role = cursor.getString(roleIndex);
+            String actualRole = cursor.getString(roleIndex);
+
+            // Verify if selected role matches user's actual role
+            if (!selectedRole.equals(actualRole)) {
+                Toast.makeText(this, "Invalid role selected for this user", Toast.LENGTH_SHORT).show();
+                cursor.close();
+                return;
+            }
 
             // Create login session
-            sessionManager.createLoginSession(userId, username, role);
+            sessionManager.createLoginSession(userId, username, actualRole);
 
             cursor.close();
 

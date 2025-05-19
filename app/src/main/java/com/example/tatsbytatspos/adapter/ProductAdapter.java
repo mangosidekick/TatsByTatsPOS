@@ -8,11 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,17 +27,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         void onProductClick(Product product);
     }
 
-    public interface OnStarClickListener {
-        void onStarClick(Product product, int position);
-    }
-
     private List<Product> productList;
-    private List<Product> originalList;
     private boolean showStar;
     private boolean invQuantity;
     private Context context;
     private OnProductClickListener listener;
-    private OnStarClickListener starListener;
 
     public ProductAdapter(Context context, List<Product> productList, boolean showStar, boolean invQuantity, OnProductClickListener listener) {
         this.context = context;
@@ -47,15 +39,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         this.showStar = showStar;
         this.invQuantity = invQuantity;
         this.listener = listener;
-    }
-
-    public ProductAdapter(Context context, List<Product> productList, boolean showStar, boolean invQuantity, OnProductClickListener listener, OnStarClickListener starListener) {
-        this.context = context;
-        this.productList = (productList != null) ? productList : new ArrayList<>();
-        this.showStar = showStar;
-        this.invQuantity = invQuantity;
-        this.listener = listener;
-        this.starListener = starListener;
     }
 
     @NonNull
@@ -70,28 +53,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         Product currentProduct = productList.get(position);
 
-        //the star and visibility button for the inventory page :)
+        //the star visibility for the inventory page :)
         if (showStar) {
             holder.star.setVisibility(View.VISIBLE);
-            holder.btnVisibility.setVisibility(View.VISIBLE);
             holder.btnPlus.setVisibility(View.INVISIBLE);
             holder.btnMinus.setVisibility(View.INVISIBLE);
-
-            // Set star color based on product visibility (indicator only)
-            if (currentProduct.isHidden()) {
-                holder.star.setColorFilter(android.graphics.Color.GRAY);
-                holder.btnVisibility.setText("Show on Menu");
-            } else {
-                holder.star.setColorFilter(android.graphics.Color.rgb(255, 165, 0)); // Orange color
-                holder.btnVisibility.setText("Hide from Menu");
-            }
-
-            // Set click listener for visibility button
-            holder.btnVisibility.setOnClickListener(v -> {
-                if (starListener != null) {
-                    starListener.onStarClick(currentProduct, position);
-                }
-            });
         } else {
             holder.star.setVisibility(View.GONE);
             holder.btnPlus.setVisibility(View.VISIBLE);
@@ -125,14 +91,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.productQuantity.setText(String.valueOf(currentProduct.getOrderQuantity()));
 
         holder.btnPlus.setOnClickListener(v -> {
-            // Check if there's enough inventory before incrementing
-            if (currentProduct.getOrderQuantity() < currentProduct.getQuantity()) {
-                int quantity = currentProduct.getOrderQuantity() + 1;
-                currentProduct.setOrderQuantity(quantity);
-                notifyItemChanged(position);
-            } else {
-                Toast.makeText(context, "Out of stock!", Toast.LENGTH_SHORT).show();
-            }
+            int quantity = currentProduct.getOrderQuantity() + 1;
+            currentProduct.setOrderQuantity(quantity);
+            notifyItemChanged(position);
         });
         holder.btnMinus.setOnClickListener(v -> {
             int quantity = currentProduct.getOrderQuantity();
@@ -164,27 +125,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     public void updateList(List<Product> newList) {
         if (newList != null) {
-            originalList = new ArrayList<>(newList);
-            productList = new ArrayList<>(newList);
+            productList = newList;
             notifyDataSetChanged();
         }
-    }
-
-    public void filter(String searchText) {
-        if (searchText.isEmpty()) {
-            // If search is empty, restore the original list
-            productList = new ArrayList<>(originalList);
-        } else {
-            // Filter from the original list
-            List<Product> filteredList = new ArrayList<>();
-            for (Product product : originalList) {
-                if (!product.isHidden() && product.getName().toLowerCase().contains(searchText.toLowerCase())) {
-                    filteredList.add(product);
-                }
-            }
-            productList = filteredList;
-        }
-        notifyDataSetChanged();
     }
 
     public List<Product> getProductList() {
@@ -195,7 +138,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         ImageView productImage;
         TextView productName, productPrice, productQuantity, productInvQuantity;
         ImageButton btnMinus, btnPlus, star;
-        Button btnVisibility;
 
         public ProductViewHolder(View itemView) {
             super(itemView);
@@ -207,7 +149,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             btnMinus = itemView.findViewById(R.id.btn_minus);
             btnPlus = itemView.findViewById(R.id.btn_plus);
             star = itemView.findViewById(R.id.star);
-            btnVisibility = itemView.findViewById(R.id.btn_visibility);
         }
     }
 }

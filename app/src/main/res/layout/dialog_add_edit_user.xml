@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:orientation="vertical">
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -13,10 +12,12 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etUsername"
+            android:id="@+id/editName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Username"
+            android:hint="Product Name"
+            android:fontFamily="@font/abel"
+            android:textColor="@color/black"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -24,29 +25,63 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:passwordToggleEnabled="true">
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etPassword"
+            android:id="@+id/editPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"
-            android:inputType="textPassword" />
+            android:hint="Price"
+            android:fontFamily="@font/abel"
+            android:textColor="@color/black"
+            android:inputType="numberDecimal" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etRole"
+            android:id="@+id/editQuantity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Role (ADMIN/MANAGER/CASHIER)"
-            android:inputType="textCapCharacters"
-            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ/" />
+            android:hint="Quantity"
+            android:fontFamily="@font/abel"
+            android:textColor="@color/black"
+            android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <ImageView
+        android:id="@+id/imagePreview"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:scaleType="centerCrop"
+        android:src="@android:drawable/ic_menu_gallery"
+        android:layout_marginTop="12dp"
+        android:contentDescription="Image Preview" />
+
+    <Button
+        android:fontFamily="@font/abel"
+        android:id="@+id/btnPickImage"
+        android:textColor="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Choose Image" />
+
+    <ToggleButton
+        android:fontFamily="@font/abel"
+        android:layout_gravity="center"
+        android:background="@drawable/round_rectangle"
+        android:backgroundTint="@color/orange"
+        android:id="@+id/toggleShow"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:textOn="Show on menu"
+        android:textOff="Hide from menu"
+        android:textColor="@color/black"
+        android:checked="true"
+        android:layout_marginTop="12dp" />
 </LinearLayout>

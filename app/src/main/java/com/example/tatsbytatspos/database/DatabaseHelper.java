@@ -11,6 +11,7 @@ import com.example.tatsbytatspos.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "TatsByTatsPOS.db";
@@ -61,11 +62,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_ORDERS);
         db.execSQL(CREATE_TABLE_USERS);
 
-        // Insert default manager account
+        // Insert default admin account
         ContentValues values = new ContentValues();
         values.put(COLUMN_USERNAME, "admin");
         values.put(COLUMN_PASSWORD, "admin123"); // In production, use proper password hashing
-        values.put(COLUMN_ROLE, "MANAGER");
+        values.put(COLUMN_ROLE, "ADMIN");
         db.insert(TABLE_USERS, null, values);
     }
 
@@ -284,5 +285,84 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         }
         return userId;
+    }
+
+    public boolean insertOrderWithItems(List<Integer> productIds, List<Integer> quantities, String orderDate, String paymentMethod) {
+        SQLiteDatabase db = null;
+        boolean success = false;
+
+        try {
+            db = this.getWritableDatabase();
+            db.beginTransaction();
+
+            // Create order summary and calculate total
+            StringBuilder summary = new StringBuilder();
+            double total = 0.0;
+
+            // Get product details and build summary
+            for (int i = 0; i < productIds.size(); i++) {
+                int productId = productIds.get(i);
+                int quantity = quantities.get(i);
+
+                // Get product details
+                Cursor productCursor = db.query("products",
+                        new String[]{"name", "price"},
+                        "id=?",
+                        new String[]{String.valueOf(productId)},
+                        null, null, null);
+
+                if (productCursor != null && productCursor.moveToFirst()) {
+                    String name = productCursor.getString(0);
+                    double price = productCursor.getDouble(1);
+                    double itemTotal = price * quantity;
+
+                    summary.append(name)
+                            .append(" x")
+                            .append(quantity)
+                            .append(" = ₱")
+                            .append(String.format(Locale.getDefault(), "%.2f", itemTotal))
+                            .append("\n");
+
+                    total += itemTotal;
+                    productCursor.close();
+                }
+            }
+
+            // Insert order record
+            ContentValues orderValues = new ContentValues();
+            orderValues.put(COLUMN_ORDER_SUMMARY, summary.toString());
+            orderValues.put(COLUMN_TOTAL_AMOUNT, total);
+            orderValues.put(COLUMN_PAYMENT_METHOD, paymentMethod);
+            orderValues.put(COLUMN_PAYMENT_STATUS, "Completed");
+            orderValues.put(COLUMN_TIMESTAMP, orderDate);
+
+            long orderId = db.insert(TABLE_ORDERS, null, orderValues);
+
+            if (orderId != -1) {
+                // Insert order items
+                for (int i = 0; i < productIds.size(); i++) {
+                    ContentValues itemValues = new ContentValues();
+                    itemValues.put("order_id", orderId);
+                    itemValues.put("product_id", productIds.get(i));
+                    itemValues.put("quantity", quantities.get(i));
+
+                    db.insert("order_items", null, itemValues);
+                }
+
+                db.setTransactionSuccessful();
+                success = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (db != null) {
+                db.endTransaction();
+                if (db.isOpen()) {
+                    db.close();
+                }
+            }
+        }
+
+        return success;
     }
 }
