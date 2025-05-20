@@ -310,7 +310,7 @@ public class FileMaintenance extends AppCompatActivity {
                         success = db.updateProduct(product.getId(), name, price, quantity, imageBytes, product.isHidden());
                     } else {
                         // Use the overloaded method without image parameter
-                        success = db.updateProduct(product.getId(), name, price, quantity, imageBytes, product.isHidden());
+                        success = db.updateProduct(product.getId(), name, price, quantity, product.isHidden());
                     }
 
                     if (success) {

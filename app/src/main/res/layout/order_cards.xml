@@ -64,4 +64,33 @@
 
     </FrameLayout>
 
+    <!-- Order Amount and Payment Info -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:fontFamily="@font/abel"
+            android:id="@+id/order_amount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="₱0.00"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:fontFamily="@font/abel"
+            android:id="@+id/payment_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Payment Method"
+            android:textSize="16sp"
+            android:textColor="@android:color/black" />
     </LinearLayout>
+
+</LinearLayout>
