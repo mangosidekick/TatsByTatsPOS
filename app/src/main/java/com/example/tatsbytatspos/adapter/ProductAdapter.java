@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -149,6 +150,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                     int enteredQty = Integer.parseInt(input);
                     currentProduct.setOrderQuantity(enteredQty);
                 }
+
+                // Hide the keyboard
+                InputMethodManager imm = (InputMethodManager) holder.itemView.getContext()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                // Clear focus so keyboard doesn't pop back up
+                holder.productQuantity.clearFocus();
+
                 return true;
             }
             return false;

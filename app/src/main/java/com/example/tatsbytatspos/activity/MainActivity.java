@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 5); // 2 columns
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        productAdapter = new ProductAdapter(this, productList, false, false, true, null, null);
+        productAdapter = new ProductAdapter(this, productList, false, false, false, null, null);
         recyclerView.setAdapter(productAdapter);
 
         loadProductsFromDatabase();
