@@ -16,6 +16,9 @@ import com.example.tatsbytatspos.fragment.OrderHistoryFragment;
 import com.example.tatsbytatspos.model.Orders;
 
 import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewHolder> {
 
@@ -40,9 +43,15 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Orders order = ordersList.get(position);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        Date orderDate = new Date(order.getOrderDate());
+
         holder.orderNumberText.setText("Order #" + order.getId());
-        holder.orderDateText.setText("Amount: ₱" + String.format("%.2f", order.getTotalAmount()));
-        holder.orderTimeText.setText("Payment: " + order.getPaymentMethod() + " (" + order.getPaymentStatus() + ")");
+        holder.orderDateText.setText(dateFormat.format(orderDate));
+        holder.orderTimeText.setText(timeFormat.format(orderDate));
+        holder.orderAmountText.setText(String.format(Locale.getDefault(), "₱%.2f", order.getTotalAmount()));
+        holder.paymentInfoText.setText(order.getPaymentMethod() + " (" + order.getPaymentStatus() + ")");
 
         holder.itemView.setOnClickListener(v -> {
             try {
@@ -66,12 +75,16 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         TextView orderNumberText;
         TextView orderDateText;
         TextView orderTimeText;
+        TextView orderAmountText;
+        TextView paymentInfoText;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
             orderNumberText = itemView.findViewById(R.id.order_number);
             orderDateText = itemView.findViewById(R.id.order_date);
             orderTimeText = itemView.findViewById(R.id.order_time);
+            orderAmountText = itemView.findViewById(R.id.order_amount);
+            paymentInfoText = itemView.findViewById(R.id.payment_info);
         }
     }
 }

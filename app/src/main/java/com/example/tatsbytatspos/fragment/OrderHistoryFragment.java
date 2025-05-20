@@ -18,6 +18,10 @@ import com.example.tatsbytatspos.R;
 import com.example.tatsbytatspos.database.DatabaseHelper;
 import com.example.tatsbytatspos.model.Orders;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class OrderHistoryFragment extends DialogFragment {
     private static final String ARG_ORDER_ID = "order_id";
     private int orderId;
@@ -64,7 +68,10 @@ public class OrderHistoryFragment extends DialogFragment {
                 if (order != null) {
                     // Format and display order details with better formatting
                     StringBuilder details = new StringBuilder();
-                    details.append("ORDER #").append(order.getId()).append("\n\n");
+                    details.append("ORDER #").append(order.getId()).append("\n");
+                    details.append("Transaction ID: ").append(String.format("%08d", order.getId())).append("\n");
+                    details.append("Date: ").append(new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault())
+                            .format(new Date())).append("\n\n");
                     details.append("ITEMS:\n");
 
                     // Format the order summary for better readability

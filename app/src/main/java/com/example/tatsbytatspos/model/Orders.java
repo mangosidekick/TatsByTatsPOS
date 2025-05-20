@@ -6,12 +6,14 @@ public class Orders {
     private double totalAmount;
     private String paymentMethod;
     private String paymentStatus;
+    private long orderDate;
 
     public Orders(String orderSummary, double totalAmount, String paymentMethod, String paymentStatus) {
         this.orderSummary = orderSummary;
         this.totalAmount = totalAmount;
         this.paymentMethod = paymentMethod;
         this.paymentStatus = paymentStatus;
+        this.orderDate = System.currentTimeMillis();
     }
 
     public int getId() {
@@ -52,5 +54,13 @@ public class Orders {
 
     public void setPaymentStatus(String paymentStatus) {
         this.paymentStatus = paymentStatus;
+    }
+
+    public long getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(long orderDate) {
+        this.orderDate = orderDate;
     }
 }

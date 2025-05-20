@@ -5,13 +5,22 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import com.example.tatsbytatspos.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Database extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "Database.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
+
+    // Users table
+    public static final String USERS_TABLE_NAME = "users";
+    public static final String COLUMN_USER_ID = "user_id";
+    public static final String COLUMN_USERNAME = "username";
+    public static final String COLUMN_PASSWORD = "password";
+    public static final String COLUMN_USER_ROLE = "role";
 
     //product table
     public static final String TABLE_NAME = "products";
@@ -37,14 +46,6 @@ public class Database extends SQLiteOpenHelper {
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        try {
-            SQLiteDatabase db = this.getWritableDatabase();
-            if (db != null) {
-                db.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -55,7 +56,7 @@ public class Database extends SQLiteOpenHelper {
                 COLUMN_PRICE + " REAL NOT NULL, " +
                 COLUMN_QUANTITY + " INTEGER NOT NULL, " +
                 COLUMN_IMAGE + " BLOB, " +
-                COLUMN_HIDDEN + " INTEGER DEFAULT 0)";
+                COLUMN_HIDDEN + " INTEGER NOT NULL DEFAULT 0)";
 
         // Orders table
         String createOrdersTableSQL = "CREATE TABLE " + ORDER_TABLE_NAME + " (" +
@@ -72,32 +73,193 @@ public class Database extends SQLiteOpenHelper {
                 "FOREIGN KEY(" + COLUMN_ORDER_ITEM_ORDER_ID + ") REFERENCES " + ORDER_TABLE_NAME + "(" + COLUMN_ORDER_ID + "), " +
                 "FOREIGN KEY(" + COLUMN_ORDER_ITEM_PRODUCT_ID + ") REFERENCES " + TABLE_NAME + "(" + COLUMN_ID + "))";
 
+        // Users table
+        String createUsersTableSQL = "CREATE TABLE " + USERS_TABLE_NAME + " (" +
+                COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_USERNAME + " TEXT NOT NULL UNIQUE, " +
+                COLUMN_PASSWORD + " TEXT NOT NULL, " +
+                COLUMN_USER_ROLE + " TEXT NOT NULL)";
+
         db.execSQL(createProductTableSQL);
         db.execSQL(createOrdersTableSQL);
         db.execSQL(createOrderItemsTableSQL);
+        db.execSQL(createUsersTableSQL);
+
+        // Insert default admin account
+        ContentValues adminValues = new ContentValues();
+        adminValues.put(COLUMN_USERNAME, "admin");
+        adminValues.put(COLUMN_PASSWORD, "admin123");
+        adminValues.put(COLUMN_USER_ROLE, "ADMIN");
+        db.insert(USERS_TABLE_NAME, null, adminValues);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        onCreate(db);
+        if (oldVersion < 2) {
+            // Add hidden column to products table
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_HIDDEN + " INTEGER NOT NULL DEFAULT 0");
+        }
+        if (oldVersion < 3) {
+            // Create users table
+            String createUsersTableSQL = "CREATE TABLE " + USERS_TABLE_NAME + " (" +
+                    COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_USERNAME + " TEXT NOT NULL UNIQUE, " +
+                    COLUMN_PASSWORD + " TEXT NOT NULL, " +
+                    COLUMN_USER_ROLE + " TEXT NOT NULL)";
+            db.execSQL(createUsersTableSQL);
+
+            // Insert default admin account
+            ContentValues adminValues = new ContentValues();
+            adminValues.put(COLUMN_USERNAME, "admin");
+            adminValues.put(COLUMN_PASSWORD, "admin123");
+            adminValues.put(COLUMN_USER_ROLE, "MANAGER");
+            db.insert(USERS_TABLE_NAME, null, adminValues);
+        }
     }
 
     // Insert a product
-    public boolean insertProduct(String name, double price, int quantity, byte[] image, boolean isHidden) {
+    public boolean insertProduct(String name, double price, int quantity, byte[] image) {
+        return insertProduct(name, price, quantity, image, false);
+    }
+
+    // Insert a product with hidden status
+    public boolean insertProduct(String name, double price, int quantity, byte[] image, boolean hidden) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, name);
         values.put(COLUMN_PRICE, price);
         values.put(COLUMN_QUANTITY, quantity);
         values.put(COLUMN_IMAGE, image);
-        values.put(COLUMN_HIDDEN, 0); // Not hidden by default
+        values.put(COLUMN_HIDDEN, hidden ? 1 : 0);
         long result = db.insert(TABLE_NAME, null, values);
         return result != -1;
     }
 
+    // User management methods
+    public User authenticateUser(String username, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        User user = null;
+        Cursor cursor = null;
+
+        try {
+            String[] columns = {COLUMN_USER_ID, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_USER_ROLE};
+            String selection = COLUMN_USERNAME + "=? AND " + COLUMN_PASSWORD + "=?";
+            String[] selectionArgs = {username, password};
+
+            cursor = db.query(USERS_TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                int idIndex = cursor.getColumnIndexOrThrow(COLUMN_USER_ID);
+                int roleIndex = cursor.getColumnIndexOrThrow(COLUMN_USER_ROLE);
+
+                if (idIndex >= 0 && roleIndex >= 0) {
+                    int id = cursor.getInt(idIndex);
+                    String role = cursor.getString(roleIndex);
+                    // Convert MANAGER role to ADMIN for compatibility
+                    if ("MANAGER".equalsIgnoreCase(role)) {
+                        role = "ADMIN";
+                    }
+                    user = new User(username, password, role);
+                    user.setId(id);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
+        }
+        return user;
+    }
+
+    public Cursor getAllUsers() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        try {
+            return db.query(USERS_TABLE_NAME,
+                    new String[]{COLUMN_USER_ID, COLUMN_USERNAME, COLUMN_USER_ROLE},
+                    null, null, null, null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean addUser(String username, String password, String role) {
+        if (username == null || password == null || role == null) {
+            return false;
+        }
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_USERNAME, username.trim());
+        values.put(COLUMN_PASSWORD, password.trim());
+        values.put(COLUMN_USER_ROLE, role.trim());
+
+        try {
+            long result = db.insertOrThrow(USERS_TABLE_NAME, null, values);
+            return result != -1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.close();
+        }
+    }
+
+    public boolean updateUser(int userId, String username, String password, String role) {
+        if (username == null || role == null || userId <= 0) {
+            return false;
+        }
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_USERNAME, username.trim());
+        if (password != null && !password.isEmpty()) {
+            values.put(COLUMN_PASSWORD, password.trim());
+        }
+        values.put(COLUMN_USER_ROLE, role.trim());
+
+        try {
+            String whereClause = COLUMN_USER_ID + "=?";
+            String[] whereArgs = {String.valueOf(userId)};
+            int result = db.update(USERS_TABLE_NAME, values, whereClause, whereArgs);
+            return result > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.close();
+        }
+    }
+
+    public boolean deleteUser(int userId) {
+        if (userId <= 0) {
+            return false;
+        }
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            String whereClause = COLUMN_USER_ID + "=?";
+            String[] whereArgs = {String.valueOf(userId)};
+            int result = db.delete(USERS_TABLE_NAME, whereClause, whereArgs);
+            return result > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.close();
+        }
+    }
+
     public boolean insertOrderWithItems(List<Integer> productIds, List<Integer> quantities, String dateTime, String paymentMethod) {
-        if (productIds.size() != quantities.size()) return false;
+        if (productIds == null || quantities == null || dateTime == null || paymentMethod == null ||
+                productIds.isEmpty() || quantities.isEmpty() || productIds.size() != quantities.size()) {
+            return false;
+        }
 
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
@@ -105,34 +267,50 @@ public class Database extends SQLiteOpenHelper {
         try {
             // Insert into orders table
             ContentValues orderValues = new ContentValues();
-            orderValues.put(COLUMN_ORDER_DATETIME, dateTime);
-            orderValues.put(COLUMN_ORDER_PAYMENT, paymentMethod);
-            long orderId = db.insert(ORDER_TABLE_NAME, null, orderValues);
-            if (orderId == -1) return false;
+            orderValues.put(COLUMN_ORDER_DATETIME, dateTime.trim());
+            orderValues.put(COLUMN_ORDER_PAYMENT, paymentMethod.trim());
+            long orderId = db.insertOrThrow(ORDER_TABLE_NAME, null, orderValues);
+            if (orderId == -1) {
+                return false;
+            }
 
             // Insert each product into order_items
             for (int i = 0; i < productIds.size(); i++) {
                 int productId = productIds.get(i);
                 int quantity = quantities.get(i);
 
-                // Check stock
-                Cursor cursor = db.rawQuery("SELECT " + COLUMN_QUANTITY + " FROM " + TABLE_NAME + " WHERE " + COLUMN_ID + "=?", new String[]{String.valueOf(productId)});
-                if (cursor.moveToFirst()) {
-                    int currentStock = cursor.getInt(0);
-                    if (currentStock < quantity) {
-                        cursor.close();
-                        db.endTransaction();
-                        return false; // Not enough stock
-                    }
+                if (productId <= 0 || quantity <= 0) {
+                    throw new IllegalArgumentException("Invalid product ID or quantity");
+                }
 
-                    // Reduce stock
-                    ContentValues updateValues = new ContentValues();
-                    updateValues.put(COLUMN_QUANTITY, currentStock - quantity);
-                    db.update(TABLE_NAME, updateValues, COLUMN_ID + "=?", new String[]{String.valueOf(productId)});
-                    cursor.close();
-                } else {
-                    db.endTransaction();
-                    return false; // Product not found
+                // Check stock
+                Cursor cursor = null;
+                try {
+                    cursor = db.rawQuery("SELECT " + COLUMN_QUANTITY + " FROM " + TABLE_NAME +
+                            " WHERE " + COLUMN_ID + "=?", new String[]{String.valueOf(productId)});
+
+                    if (cursor != null && cursor.moveToFirst()) {
+                        int currentStock = cursor.getInt(0);
+                        if (currentStock < quantity) {
+                            throw new IllegalStateException("Not enough stock for product ID: " + productId);
+                        }
+
+                        // Reduce stock
+                        ContentValues updateValues = new ContentValues();
+                        updateValues.put(COLUMN_QUANTITY, currentStock - quantity);
+                        int updateResult = db.update(TABLE_NAME, updateValues,
+                                COLUMN_ID + "=?", new String[]{String.valueOf(productId)});
+
+                        if (updateResult <= 0) {
+                            throw new IllegalStateException("Failed to update stock for product ID: " + productId);
+                        }
+                    } else {
+                        throw new IllegalStateException("Product not found with ID: " + productId);
+                    }
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
                 }
 
                 // Add to order_items
@@ -140,94 +318,124 @@ public class Database extends SQLiteOpenHelper {
                 itemValues.put(COLUMN_ORDER_ITEM_ORDER_ID, orderId);
                 itemValues.put(COLUMN_ORDER_ITEM_PRODUCT_ID, productId);
                 itemValues.put(COLUMN_ORDER_ITEM_QUANTITY, quantity);
-                db.insert(ORDER_ITEMS_TABLE_NAME, null, itemValues);
+                long itemResult = db.insertOrThrow(ORDER_ITEMS_TABLE_NAME, null, itemValues);
+
+                if (itemResult == -1) {
+                    throw new IllegalStateException("Failed to insert order item for product ID: " + productId);
+                }
             }
 
             db.setTransactionSuccessful();
             return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         } finally {
             db.endTransaction();
+            db.close();
+        }
+    }
+
+    // Get all orders with product details
+    public Cursor getAllOrdersWithProductDetails() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            String query = "SELECT " +
+                    "o." + COLUMN_ORDER_ID + " AS order_id, " +
+                    "o." + COLUMN_ORDER_DATETIME + " AS order_datetime, " +
+                    "o." + COLUMN_ORDER_PAYMENT + " AS payment_method, " +
+                    "p." + COLUMN_NAME + " AS product_name, " +
+                    "p." + COLUMN_PRICE + " AS product_price, " +
+                    "i." + COLUMN_ORDER_ITEM_QUANTITY + " AS quantity_ordered " +
+                    "FROM " + ORDER_TABLE_NAME + " o " +
+                    "JOIN " + ORDER_ITEMS_TABLE_NAME + " i ON o." + COLUMN_ORDER_ID + " = i." + COLUMN_ORDER_ITEM_ORDER_ID + " " +
+                    "JOIN " + TABLE_NAME + " p ON i." + COLUMN_ORDER_ITEM_PRODUCT_ID + " = p." + COLUMN_ID + " " +
+                    "ORDER BY o." + COLUMN_ORDER_ID + " DESC";
+
+            cursor = db.rawQuery(query, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+            }
+            return cursor;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
+            return null;
         }
     }
 
     // Get all products
     public Cursor getAllProducts() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        Cursor cursor = null;
+        try {
+            String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_HIDDEN + "=0";
+            cursor = db.rawQuery(query, null);
+            return cursor;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (cursor != null) {
+                cursor.close();
+            }
+            return null;
+        }
     }
 
-    // Get visible products (not hidden)
-    public Cursor getVisibleProducts() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_HIDDEN + "=0", null);
-    }
+    // Update a product
+    public boolean updateProduct(int id, String name, double price, int quantity, byte[] image, boolean updateInventory) {
+        if (id <= 0 || name == null || name.isEmpty() || price < 0 || quantity < 0) {
+            return false;
+        }
 
-    // Update product by ID
-    public boolean updateProduct(int id, String name, double price, int quantity, byte[] image, boolean hidden) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("name", name);
-        values.put("price", price);
-        values.put("quantity", quantity);
-        values.put("image", image);
-        values.put("hidden", hidden ? 1 : 0);
-        int rows = db.update("products", values, "id=?", new String[]{String.valueOf(id)});
-        return rows > 0;
+        values.put(COLUMN_NAME, name.trim());
+        values.put(COLUMN_PRICE, price);
+        values.put(COLUMN_QUANTITY, quantity);
+        if (image != null) {
+            values.put(COLUMN_IMAGE, image);
+        }
+
+        try {
+            String whereClause = COLUMN_ID + "=?";
+            String[] whereArgs = {String.valueOf(id)};
+            int result = db.update(TABLE_NAME, values, whereClause, whereArgs);
+            return result > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.close();
+        }
     }
 
-    // Update product by ID (without changing image)
-    public boolean updateProduct(int id, String name, double price, int quantity, boolean hidden) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("name", name);
-        values.put("price", price);
-        values.put("quantity", quantity);
-        values.put("hidden", hidden ? 1 : 0);
-        int rows = db.update("products", values, "id=?", new String[]{String.valueOf(id)});
-        return rows > 0;
-    }
-
-    // Toggle product visibility
-    public boolean toggleProductVisibility(int id, boolean hidden) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("hidden", hidden ? 1 : 0);
-        int rows = db.update("products", values, "id=?", new String[]{String.valueOf(id)});
-        return rows > 0;
-    }
-
-    // Update product quantity
-    public boolean updateProductQuantity(int id, int newQuantity) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("quantity", newQuantity);
-        int rows = db.update("products", values, "id=?", new String[]{String.valueOf(id)});
-        return rows > 0;
-    }
-
+    // Delete a product
     public boolean deleteProduct(int id) {
+        if (id <= 0) {
+            return false;
+        }
+
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = db.delete("products", "id=?", new String[]{String.valueOf(id)});
-        return rows > 0;
-    }
+        try {
+            // Instead of actually deleting, we'll mark it as hidden
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_HIDDEN, 1);
 
-    // Get all orders with product details
-    public Cursor getAllOrdersWithProductDetails() {
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        String query = "SELECT " +
-                "o." + COLUMN_ORDER_ID + " AS order_id, " +
-                "o." + COLUMN_ORDER_DATETIME + " AS order_datetime, " +
-                "o." + COLUMN_ORDER_PAYMENT + " AS payment_method, " +
-                "p." + COLUMN_NAME + " AS product_name, " +
-                "p." + COLUMN_PRICE + " AS product_price, " +
-                "i." + COLUMN_ORDER_ITEM_QUANTITY + " AS quantity_ordered " +
-                "FROM " + ORDER_TABLE_NAME + " o " +
-                "JOIN " + ORDER_ITEMS_TABLE_NAME + " i ON o." + COLUMN_ORDER_ID + " = i." + COLUMN_ORDER_ITEM_ORDER_ID + " " +
-                "JOIN " + TABLE_NAME + " p ON i." + COLUMN_ORDER_ITEM_PRODUCT_ID + " = p." + COLUMN_ID + " " +
-                "ORDER BY o." + COLUMN_ORDER_ID + " DESC";
-
-        return db.rawQuery(query, null);
+            String whereClause = COLUMN_ID + "=?";
+            String[] whereArgs = {String.valueOf(id)};
+            int result = db.update(TABLE_NAME, values, whereClause, whereArgs);
+            return result > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.close();
+        }
     }
 }
-
