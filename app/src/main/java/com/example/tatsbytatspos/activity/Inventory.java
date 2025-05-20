@@ -1,6 +1,7 @@
 package com.example.tatsbytatspos.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -71,7 +72,9 @@ public class Inventory extends AppCompatActivity {
         // Sidebar button opens drawer
         sideBarButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
-        String role = getIntent().getStringExtra("role");
+        SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        String role = prefs.getString("role", "");
+
         if ("Cashier".equals(role)) {
             menu.findItem(R.id.nav_file_maintenance).setVisible(false); // Hide from view
         }

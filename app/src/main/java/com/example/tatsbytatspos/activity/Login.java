@@ -1,6 +1,7 @@
 package com.example.tatsbytatspos.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
@@ -39,16 +40,19 @@ public class Login extends AppCompatActivity {
             RadioButton selectedRole = findViewById(selectedRoleId);
             String role = selectedRole.getText().toString();
 
+            SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+            prefs.edit().putString("role", role).apply();
+
             Intent intent;
             if (role.equals("Admin") && username.equals("admin") && password.equals("admin123")) {
-                intent = new Intent(this, MainActivity.class);
-                intent.putExtra("role", "Admin");
-                startActivity(intent);
+                prefs.edit().putString("role", "Admin").apply();
+                startActivity(new Intent(this, MainActivity.class));
             } else if (role.equals("Cashier") && username.equals("cashier") && password.equals("cashier123")) {
-                intent = new Intent(this, MainActivity.class);
-                intent.putExtra("role", "Cashier");
-                startActivity(intent);
+                prefs.edit().putString("role", "Cashier").apply();
+                startActivity(new Intent(this, MainActivity.class));
             }
         });
+
+
     }
 }
