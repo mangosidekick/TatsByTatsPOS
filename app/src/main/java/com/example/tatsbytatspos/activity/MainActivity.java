@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         boolean showStarButton = false;
         boolean showInventoryQuantity = false;
 
-        productAdapter = new ProductAdapter(this, productList, showStarButton, showInventoryQuantity, null);
+        productAdapter = new ProductAdapter(this, productList, showStarButton, showInventoryQuantity, null, null);
         recyclerView.setAdapter(productAdapter);
 
         loadProductsFromDatabase();

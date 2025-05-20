@@ -41,14 +41,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     private OnProductClickListener listener;
     private OnStarClickListener starListener;
 
-    public ProductAdapter(Context context, List<Product> productList, boolean showStar, boolean invQuantity, OnProductClickListener listener) {
-        this.context = context;
-        this.productList = (productList != null) ? productList : new ArrayList<>();
-        this.showStar = showStar;
-        this.invQuantity = invQuantity;
-        this.listener = listener;
-    }
-
     public ProductAdapter(Context context, List<Product> productList, boolean showStar, boolean invQuantity, OnProductClickListener listener, OnStarClickListener starListener) {
         this.context = context;
         this.productList = (productList != null) ? productList : new ArrayList<>();
