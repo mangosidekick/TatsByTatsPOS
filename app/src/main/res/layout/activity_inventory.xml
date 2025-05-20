@@ -89,5 +89,5 @@
         app:headerLayout="@layout/nav_header"
         app:itemBackground="@android:color/transparent"
         app:itemTextColor="@color/white"
-        app:menu="@menu/nav_menu" />
+        app:menu="@menu/navigation_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>
