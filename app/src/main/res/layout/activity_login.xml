@@ -11,13 +11,21 @@
     tools:context=".activity.Login"
     android:background="#F5F5F5">
 
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/logo_tats"
+        android:layout_margin="10dp"
+        android:background="@drawable/round_rectangle"
+        android:backgroundTint="@color/white"
+        />
     <TextView
         android:id="@+id/tvTitle"
         android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/abel"
-        android:text="Login"
+        android:text="TatsByTatsPOS"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginBottom="24dp" />
@@ -35,7 +43,7 @@
             android:fontFamily="@font/abel"
             android:textColor="@color/black"
             android:id="@+id/etUsername"
-            android:layout_width="match_parent"
+            android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:hint="Username"
             android:inputType="text" />
@@ -92,7 +100,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:fontFamily="@font/abel"
-        android:text="Login"
+        android:text="Log In"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginTop="24dp" />
