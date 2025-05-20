@@ -438,4 +438,12 @@ public class Database extends SQLiteOpenHelper {
             db.close();
         }
     }
+    // Toggle product visibility
+    public boolean toggleProductVisibility(int id, boolean hidden) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("hidden", hidden ? 1 : 0);
+        int rows = db.update("products", values, "id=?", new String[]{String.valueOf(id)});
+        return rows > 0;
+    }
 }
