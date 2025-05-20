@@ -93,8 +93,12 @@ public class TransactionFragment extends DialogFragment {
                     dbHelper = new DatabaseHelper(requireContext());
                 }
 
-                // Save order to database
-                long orderId = dbHelper.insertOrder(summary, totalAmount, paymentMethod, "Completed");
+                // Get amount paid and change from arguments
+                double amountPaid = getArguments().getDouble(ARG_AMOUNT_PAID);
+                double change = getArguments().getDouble(ARG_CHANGE);
+
+                // Save order to database with payment details
+                long orderId = dbHelper.insertOrder(summary, totalAmount, paymentMethod, "Completed", amountPaid, change);
 
                 if (orderId != -1) {
                     // Show success message

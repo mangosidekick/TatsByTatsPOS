@@ -86,7 +86,9 @@ public class OrderHistoryFragment extends DialogFragment {
                         details.append("No items found\n");
                     }
 
-                    details.append("\nTOTAL AMOUNT: ₱").append(String.format("%.2f", order.getTotalAmount())).append("\n\n");
+                    details.append("\nTOTAL AMOUNT: ₱").append(String.format("%.2f", order.getTotalAmount())).append("\n");
+                    details.append("AMOUNT PAID: ₱").append(String.format("%.2f", order.getAmountPaid())).append("\n");
+                    details.append("CHANGE: ₱").append(String.format("%.2f", order.getChange())).append("\n\n");
                     details.append("PAYMENT METHOD: ").append(order.getPaymentMethod()).append("\n\n");
                     details.append("STATUS: ").append(order.getPaymentStatus());
 

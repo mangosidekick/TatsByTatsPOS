@@ -34,6 +34,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_PAYMENT_METHOD = "payment_method";
     private static final String COLUMN_PAYMENT_STATUS = "payment_status";
     private static final String COLUMN_TIMESTAMP = "timestamp";
+    private static final String COLUMN_AMOUNT_PAID = "amount_paid";
+    private static final String COLUMN_CHANGE = "change_amount";
 
     // Create table SQL query
     private static final String CREATE_TABLE_ORDERS = "CREATE TABLE " + TABLE_ORDERS + "("
@@ -42,6 +44,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_TOTAL_AMOUNT + " REAL,"
             + COLUMN_PAYMENT_METHOD + " TEXT,"
             + COLUMN_PAYMENT_STATUS + " TEXT,"
+            + COLUMN_AMOUNT_PAID + " REAL,"
+            + COLUMN_CHANGE + " REAL,"
             + COLUMN_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP"
             + ")";
 
@@ -86,7 +90,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public long insertOrder(String orderSummary, double totalAmount, String paymentMethod, String paymentStatus) {
+    public long insertOrder(String orderSummary, double totalAmount, String paymentMethod, String paymentStatus, double amountPaid, double change) {
         long id = -1;
         SQLiteDatabase db = null;
         try {
@@ -97,6 +101,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put(COLUMN_TOTAL_AMOUNT, totalAmount);
             values.put(COLUMN_PAYMENT_METHOD, paymentMethod);
             values.put(COLUMN_PAYMENT_STATUS, paymentStatus);
+            values.put(COLUMN_AMOUNT_PAID, amountPaid);
+            values.put(COLUMN_CHANGE, change);
 
             id = db.insert(TABLE_ORDERS, null, values);
         } catch (Exception e) {
@@ -127,11 +133,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     int paymentStatusIndex = cursor.getColumnIndexOrThrow(COLUMN_PAYMENT_STATUS);
                     int idIndex = cursor.getColumnIndexOrThrow(COLUMN_ID);
 
+                    int amountPaidIndex = cursor.getColumnIndexOrThrow(COLUMN_AMOUNT_PAID);
+                    int changeIndex = cursor.getColumnIndexOrThrow(COLUMN_CHANGE);
                     Orders order = new Orders(
                             cursor.getString(orderSummaryIndex),
                             cursor.getDouble(totalAmountIndex),
                             cursor.getString(paymentMethodIndex),
-                            cursor.getString(paymentStatusIndex)
+                            cursor.getString(paymentStatusIndex),
+                            cursor.getDouble(amountPaidIndex),
+                            cursor.getDouble(changeIndex)
                     );
                     order.setId(cursor.getInt(idIndex));
                     orders.add(order);
@@ -150,7 +160,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return orders;
     }
 
-    public int updateOrder(int orderId, String orderSummary, double totalAmount, String paymentMethod, String paymentStatus) {
+    public int updateOrder(int orderId, String orderSummary, double totalAmount, String paymentMethod, String paymentStatus, double amountPaid, double change) {
         int rowsAffected = 0;
         SQLiteDatabase db = null;
 
@@ -162,6 +172,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put(COLUMN_TOTAL_AMOUNT, totalAmount);
             values.put(COLUMN_PAYMENT_METHOD, paymentMethod);
             values.put(COLUMN_PAYMENT_STATUS, paymentStatus);
+            values.put(COLUMN_AMOUNT_PAID, amountPaid);
+            values.put(COLUMN_CHANGE, change);
 
             rowsAffected = db.update(TABLE_ORDERS, values, COLUMN_ID + "=?",
                     new String[]{String.valueOf(orderId)});
@@ -191,12 +203,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 int totalAmountIndex = cursor.getColumnIndexOrThrow(COLUMN_TOTAL_AMOUNT);
                 int paymentMethodIndex = cursor.getColumnIndexOrThrow(COLUMN_PAYMENT_METHOD);
                 int paymentStatusIndex = cursor.getColumnIndexOrThrow(COLUMN_PAYMENT_STATUS);
+                int amountPaidIndex = cursor.getColumnIndexOrThrow(COLUMN_AMOUNT_PAID);
+                int changeIndex = cursor.getColumnIndexOrThrow(COLUMN_CHANGE);
 
                 order = new Orders(
                         cursor.getString(orderSummaryIndex),
                         cursor.getDouble(totalAmountIndex),
                         cursor.getString(paymentMethodIndex),
-                        cursor.getString(paymentStatusIndex)
+                        cursor.getString(paymentStatusIndex),
+                        cursor.getDouble(amountPaidIndex),
+                        cursor.getDouble(changeIndex)
                 );
                 order.setId(orderId);
             }

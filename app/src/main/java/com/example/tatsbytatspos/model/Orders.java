@@ -6,15 +6,19 @@ public class Orders {
     private double totalAmount;
     private String paymentMethod;
     private String paymentStatus;
-    private String orderId;
     private long orderDate;
+    private double amountPaid;
+    private double change;
+    private String orderId;
 
-    public Orders(String orderSummary, double totalAmount, String paymentMethod, String paymentStatus) {
+    public Orders(String orderSummary, double totalAmount, String paymentMethod, String paymentStatus, double amountPaid, double change) {
         this.orderSummary = orderSummary;
         this.totalAmount = totalAmount;
         this.paymentMethod = paymentMethod;
         this.paymentStatus = paymentStatus;
         this.orderDate = System.currentTimeMillis();
+        this.amountPaid = amountPaid;
+        this.change = change;
     }
 
     public String getOrderId() {
@@ -71,5 +75,21 @@ public class Orders {
 
     public void setOrderDate(long orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public double getAmountPaid() {
+        return amountPaid;
+    }
+
+    public void setAmountPaid(double amountPaid) {
+        this.amountPaid = amountPaid;
+    }
+
+    public double getChange() {
+        return change;
+    }
+
+    public void setChange(double change) {
+        this.change = change;
     }
 }
