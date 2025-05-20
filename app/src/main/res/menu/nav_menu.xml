@@ -24,5 +24,11 @@
             android:title="File Maintenance"
             />
     </group>
+    <group>
+        <item
+            android:id="@+id/nav_logout"
+            android:title="Log Out"
+            />
+    </group>
 
 </menu>

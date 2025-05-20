@@ -37,6 +37,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,6 +108,15 @@ public class FileMaintenance extends AppCompatActivity {
                 Toast.makeText(FileMaintenance.this, "Already on this screen!", Toast.LENGTH_SHORT).show();
                 //Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
                 menu.findItem(R.id.nav_file_maintenance).setVisible(false);
+
+            } else if (id == R.id.nav_logout) {
+                // Handle logout
+                prefs.edit().clear().apply();
+
+                Intent intent = new Intent(FileMaintenance.this, Login.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clear activity stack
+                startActivity(intent);
+                finish();
             }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
