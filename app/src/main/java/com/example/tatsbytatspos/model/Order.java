@@ -9,7 +9,7 @@ public class Order {
     private Date orderDate;
     private double totalAmount;
     private String status;
-    private List orderItems;
+    private List<OrderItem> orderItems;
 
     public Order() {
         this.orderItems = new ArrayList<>();
