@@ -39,13 +39,15 @@ public class Login extends AppCompatActivity {
             RadioButton selectedRole = findViewById(selectedRoleId);
             String role = selectedRole.getText().toString();
 
-            // Simulated login check
+            Intent intent;
             if (role.equals("Admin") && username.equals("admin") && password.equals("admin123")) {
-                startActivity(new Intent(this, MainActivity.class));
+                intent = new Intent(this, MainActivity.class);
+                intent.putExtra("role", "Admin");
+                startActivity(intent);
             } else if (role.equals("Cashier") && username.equals("cashier") && password.equals("cashier123")) {
-                startActivity(new Intent(this, FileMaintenance.class));
-            } else {
-                Toast.makeText(this, "Invalid credentials for " + role, Toast.LENGTH_SHORT).show();
+                intent = new Intent(this, MainActivity.class);
+                intent.putExtra("role", "Cashier");
+                startActivity(intent);
             }
         });
     }

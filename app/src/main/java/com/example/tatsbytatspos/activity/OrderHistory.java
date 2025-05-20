@@ -2,6 +2,7 @@ package com.example.tatsbytatspos.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -13,6 +14,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tatsbytatspos.model.Order;
 import com.example.tatsbytatspos.model.Orders;
 import com.example.tatsbytatspos.adapter.OrdersAdapter;
 import com.example.tatsbytatspos.R;
@@ -40,7 +42,7 @@ public class OrderHistory extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
 
-        try {
+
             // Initialize database helper
             dbHelper = new DatabaseHelper(this);
 
@@ -49,6 +51,7 @@ public class OrderHistory extends AppCompatActivity {
             toolbar = findViewById(R.id.toolbar);
             sideBarButton = findViewById(R.id.sideBarButton);
             navigationView = findViewById(R.id.navigationView);
+            Menu menu = navigationView.getMenu();
             recyclerView = findViewById(R.id.menuRecyclerView);
             searchView = findViewById(R.id.searchView);
 
@@ -70,10 +73,6 @@ public class OrderHistory extends AppCompatActivity {
 
             // Load initial data
             refreshOrderList();
-        } catch (Exception e) {
-            Toast.makeText(this, "Error initializing app: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-        }
 
         // Setup SearchView
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -107,25 +106,30 @@ public class OrderHistory extends AppCompatActivity {
             }
         });
 
+        String role = getIntent().getStringExtra("role");
+        if ("Cashier".equals(role)) {
+            menu.findItem(R.id.nav_file_maintenance).setVisible(false); // Hide from view
+        }
+
         // Navigation drawer item clicks
         navigationView.setNavigationItemSelectedListener(item -> {
-            try {
                 int id = item.getItemId();
+
                 if (id == R.id.nav_home) {
                     startActivity(new Intent(OrderHistory.this, MainActivity.class));
                 } else if (id == R.id.nav_history) {
                     Toast.makeText(OrderHistory.this, "Already on this screen!", Toast.LENGTH_SHORT).show();
                 } else if (id == R.id.nav_inventory) {
                     startActivity(new Intent(OrderHistory.this, Inventory.class));
-                    //Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
                 } else if (id == R.id.nav_file_maintenance) {
-                    startActivity(new Intent(OrderHistory.this, FileMaintenance.class));
-                    //Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
+                    if ("Admin".equals(role)) {
+                        startActivity(new Intent(OrderHistory.this, FileMaintenance.class)
+                                .putExtra("role", role));
+                    } else {
+                        Toast.makeText(this, "Access denied: Admins only", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);
-            } catch (Exception e) {
-                Toast.makeText(OrderHistory.this, "Error navigating: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
             return true;
         });
     }

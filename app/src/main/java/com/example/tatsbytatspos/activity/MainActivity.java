@@ -7,6 +7,8 @@ import java.util.Locale;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         sideBarButton = findViewById(R.id.sideBarButton);
         navigationView = findViewById(R.id.navigationView);
+        Menu menu = navigationView.getMenu();
         confirmButton = findViewById(R.id.confirmButton);
         resetButton = findViewById(R.id.reset_button);
         recyclerView = findViewById(R.id.menuRecyclerView);
@@ -103,9 +106,15 @@ public class MainActivity extends AppCompatActivity {
         // Sidebar button opens drawer
         sideBarButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
+        String role = getIntent().getStringExtra("role");
+        if ("Cashier".equals(role)) {
+            menu.findItem(R.id.nav_file_maintenance).setVisible(false); // Hide from view
+        }
+
         // Navigation drawer item clicks
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
+
             if (id == R.id.nav_home) {
                 Toast.makeText(MainActivity.this, "Already on this screen!", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_history) {
@@ -115,7 +124,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, Inventory.class));
                 //Toast.makeText(MainActivity.this, "Inventory clicked", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_file_maintenance) {
-                startActivity(new Intent(MainActivity.this, FileMaintenance.class));
+                if ("Admin".equals(role)) {
+                    startActivity(new Intent(MainActivity.this, FileMaintenance.class)
+                            .putExtra("role", role));
+                } else {
+                    Toast.makeText(this, "Access denied: Admins only", Toast.LENGTH_SHORT).show();
+                }
             }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
