@@ -1,11 +1,13 @@
 package com.example.tatsbytatspos.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -25,11 +27,13 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
     private Context context;
     private List<Orders> ordersList;
     private FragmentManager fragmentManager;
+    private SharedPreferences sharedPreferences;
 
     public OrdersAdapter(Context context, List<Orders> ordersList, FragmentManager fragmentManager) {
         this.context = context;
         this.ordersList = ordersList;
         this.fragmentManager = fragmentManager;
+        sharedPreferences = context.getSharedPreferences("OrderPrefs", Context.MODE_PRIVATE);
     }
 
     @NonNull
@@ -43,6 +47,9 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Orders order = ordersList.get(position);
+
+        String orderId = order.getOrderId();
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
         SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
         Date orderDate = new Date(order.getOrderDate());
@@ -63,6 +70,17 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
                 e.printStackTrace();
             }
         });
+
+        // Load saved received state
+        boolean isReceived = sharedPreferences.getBoolean(orderId, false);
+        holder.toggleReceived.setChecked(isReceived);
+
+        // Handle toggle state change
+        holder.toggleReceived.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(orderId, isChecked);
+            editor.apply(); // save change
+        });
     }
 
     @Override
@@ -77,6 +95,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         TextView orderTimeText;
         TextView orderAmountText;
         TextView paymentInfoText;
+        ToggleButton toggleReceived;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -85,6 +104,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
             orderTimeText = itemView.findViewById(R.id.order_time);
             orderAmountText = itemView.findViewById(R.id.order_amount);
             paymentInfoText = itemView.findViewById(R.id.payment_info);
+            toggleReceived = itemView.findViewById(R.id.receivedToggle);
         }
     }
 }
