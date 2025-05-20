@@ -51,6 +51,7 @@ public class Inventory extends AppCompatActivity {
     private ProductAdapter productAdapter;
     private List<Product> productList;
     private NavigationView navigationView;
+    Database db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class Inventory extends AppCompatActivity {
         recyclerView = findViewById(R.id.menuRecyclerView);
 
         // Set up the Toolbar
+        db = new Database(this);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
@@ -115,6 +117,54 @@ public class Inventory extends AppCompatActivity {
         // Set up RecyclerView
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 5); // 2 columns
         recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 5));
+
+        boolean showStarButton = false;
+        boolean showInventoryQuantity = true;
+        boolean hideButtons = true;
+
+        productAdapter = new ProductAdapter(
+                this,
+                productList,
+                showStarButton,
+                showInventoryQuantity,
+                hideButtons,
+                null,
+                null
+        );
+
+        recyclerView.setAdapter(productAdapter);
+
+        loadProductsFromDatabase();
+    }
+
+    private void loadProductsFromDatabase() {
+        if (productList == null) {
+            productList = new ArrayList<>();
+        } else {
+            productList.clear();
+        }
+
+        // Use getVisibleProducts to only show products that aren't hidden
+        Cursor cursor = db.getVisibleProducts();
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                double price = cursor.getDouble(cursor.getColumnIndexOrThrow("price"));
+                int quantity = cursor.getInt(cursor.getColumnIndexOrThrow("quantity"));
+                byte[] image = cursor.getBlob(cursor.getColumnIndexOrThrow("image"));
+
+                // Check if product is out of stock
+                if (quantity <= 0) {
+                    Toast.makeText(this, name + " is out of stock!", Toast.LENGTH_SHORT).show();
+                }
+
+                Product product = new Product(id, name, price, quantity, image);
+                productList.add(product);
+
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        productAdapter.updateList(productList);
     }
 }

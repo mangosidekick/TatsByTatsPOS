@@ -128,11 +128,8 @@ public class FileMaintenance extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new GridLayoutManager(this, 5));
 
-        boolean showStarButton = true;
-        boolean showInventoryQuantity = true;
-
         productList = new ArrayList<>();
-        productAdapter = new ProductAdapter(this, productList, showStarButton, showInventoryQuantity, product -> {
+        productAdapter = new ProductAdapter(this, productList, true, true, false, product -> {
             showEditProductDialog(product);
         }, (product, position) -> {
             // Toggle product visibility

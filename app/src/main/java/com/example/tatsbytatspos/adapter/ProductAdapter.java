@@ -37,17 +37,19 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     private List<Product> originalList;
     private boolean showStar;
     private boolean invQuantity;
+    private boolean hideButtons;
     private Context context;
     private OnProductClickListener listener;
     private OnStarClickListener starListener;
 
-    public ProductAdapter(Context context, List<Product> productList, boolean showStar, boolean invQuantity, OnProductClickListener listener, OnStarClickListener starListener) {
+    public ProductAdapter(Context context, List<Product> productList, boolean showStar, boolean invQuantity, boolean hideButtons, OnProductClickListener listener, OnStarClickListener starListener) {
         this.context = context;
         this.productList = (productList != null) ? productList : new ArrayList<>();
         this.showStar = showStar;
         this.invQuantity = invQuantity;
         this.listener = listener;
         this.starListener = starListener;
+        this.hideButtons = hideButtons;
     }
 
     @NonNull
@@ -62,8 +64,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         Product currentProduct = productList.get(position);
 
-        //the star and visibility button for the inventory page :)
-        if (showStar) {
+        if(hideButtons){
+            holder.star.setVisibility(View.GONE);
+            holder.btnVisibility.setVisibility(View.GONE);
+            holder.btnPlus.setVisibility(View.GONE);
+            holder.btnMinus.setVisibility(View.GONE);
+        }else if (showStar) {
             holder.star.setVisibility(View.VISIBLE);
             holder.btnVisibility.setVisibility(View.VISIBLE);
             holder.btnPlus.setVisibility(View.INVISIBLE);
@@ -90,7 +96,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             holder.btnMinus.setVisibility(View.VISIBLE);
         }
 
-        //the quantity visibility for the inventory page :)
+        //the quantity visibility for the file maintenance page :)
         if (invQuantity) {
             holder.productInvQuantity.setVisibility(View.VISIBLE);
             holder.productQuantity.setVisibility(View.GONE);
@@ -102,7 +108,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         //the actual products
         holder.productName.setText(currentProduct.getName());
         holder.productPrice.setText("₱" + currentProduct.getPrice());
-        holder.productInvQuantity.setText(String.valueOf(currentProduct.getQuantity()));;
+        holder.productInvQuantity.setText(String.valueOf(currentProduct.getQuantity()));
         Bitmap bitmap = BitmapFactory.decodeByteArray(currentProduct.getImage(), 0, currentProduct.getImage().length);
         holder.productImage.setImageBitmap(bitmap);
 
