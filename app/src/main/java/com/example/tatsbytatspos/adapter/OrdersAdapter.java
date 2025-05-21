@@ -47,8 +47,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Orders order = ordersList.get(position);
-
-        String orderId = order.getOrderId();
+        String orderId = String.valueOf(order.getId());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
         SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
@@ -71,15 +70,31 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
             }
         });
 
-        // Load saved received state
-        boolean isReceived = sharedPreferences.getBoolean(orderId, false);
-        holder.toggleReceived.setChecked(isReceived);
+// === Received Toggle Handling ===
 
-        // Handle toggle state change
-        holder.toggleReceived.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(orderId, isChecked);
-            editor.apply(); // save change
+        holder.toggleReceived.setOnCheckedChangeListener(null); // Prevent old listeners
+
+        String key = "received_" + orderId;
+        boolean isReceived = sharedPreferences.getBoolean(key, false);
+
+        holder.toggleReceived.setChecked(isReceived);
+        holder.toggleReceived.setEnabled(!isReceived);
+        holder.toggleReceived.setAlpha(isReceived ? 0.6f : 1f);
+        holder.toggleReceived.setText(isReceived ? "Received" : "Not Received");
+
+        holder.toggleReceived.setOnClickListener(v -> {
+            if (!isReceived) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(key, true);
+                editor.apply();
+
+                holder.toggleReceived.setChecked(true);
+                holder.toggleReceived.setEnabled(false);
+                holder.toggleReceived.setAlpha(0.6f);
+                holder.toggleReceived.setText("Received");
+
+                Toast.makeText(context, "Marked as received", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
